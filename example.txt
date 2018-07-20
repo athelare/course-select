@@ -1,0 +1,21 @@
+<tr><td >通识教育</td>
+<td>022671</td><td>
+毛泽东思想和中国特色社会主义理论体系概论Ⅰ</td><td>
+3.0</td><td>
+48</td><td>
+32</td><td>
+16</td><td>
+&nbsp;</td><td>
+&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>2Δ</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+
+re pattern:
+<tr><td>(.*?)</td><td>(.*?)</td><td>(.*?)</td><td>(.*?)</td><td>(.*?)</td><td>(.*?)</td><td>(.*?)</td><td>(.*?)</td><td>(.*?)</td><td>(.*?)</td><td>(.*?)</td><td>(.*?)</td><td>(.*?)</td><td>(.*?)</td><td>(.*?)</td><td>(.*?)</td><td>(.*?)</td>
+
