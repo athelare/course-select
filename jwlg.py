@@ -72,6 +72,7 @@ def getContents():
     courses = courses[1].find_all('td')
     return courses
 
+#TODO:Change Statements to storge in the database directely.
 def main():
     #raw_contents_info : unorgnized infomation of courses content.
     #each course item takes up six rows.
@@ -88,7 +89,7 @@ def main():
             course_count+=1
             if (course_count%100 == 0):
                 print(str(course_count)+' courses get.')
-
+    #Storge Course Data
     print(str(course_count)+'coursed in total.\n\nWriting to file...')
     out_file = open('new_Course_infomation.txt','w')
     for item in courses:
@@ -103,6 +104,6 @@ def main():
             out_file.write('\n')
         out_file.write('#\n')
     out_file.close()
-    print('finished.')
+    print('File writing finished.')
 main()
 
