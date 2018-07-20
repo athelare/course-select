@@ -32,6 +32,7 @@ class Course:
 	def __init__(self,csItem):
 		#to delete
 		self.item = csItem;
+		#to delete
 		self.type = csItem[0]
 		self.index = csItem[1]
 		self.name = csItem[2]
@@ -74,24 +75,27 @@ class Grade:
 			'majorId':'110110'
 			}).text,'html.parser')
 		majorList = majorSelectPage.form.table.contents[5].findAll('option')
-		self.majors.append(Major(year,majorList[0]['value'],Grade.ridPat.sub('',majorList[0].text)))
-#		for item in majorList:
-#			self.majors.append(Major(year,item['value'],Grade.ridPat.sub('',item.text)))
+#		self.majors.append(Major(year,majorList[0]['value'],Grade.ridPat.sub('',majorList[0].text)))
+		for item in majorList:
+			self.majors.append(Major(year,item['value'],Grade.ridPat.sub('',item.text)))
 
 class WholePlan:
 	def __init__(self,gradeList):
 		self.grades = []
-		self.grades.append(Grade(gradeList[0]))
-#		for item in gradeList:
-#			self.grades.append(Grade(item))
+#		self.grades.append(Grade(gradeList[0]))
+		for item in gradeList:
+			self.grades.append(Grade(item))
 
 def main():
 	selectPage = BeautifulSoup(session.get(selectGradeMajorPage).text,'html.parser')
 	gradePat = re.compile('\d{4}a')
 	gradeList = re.findall(gradePat,selectPage.form.table.contents[3].text)
 	wholePlans = WholePlan(gradeList)
-	print('Data access completed.\nWriting to files...')
-	outfile = open('teachplan.txt','w')
+	print('Data access completed.')
+
+#	to delete
+	print('Writing to files...')
+	outfile = open('/home/lijiyu/course-select/getInfo/All_Teaching_Plan','w')
 	for grade in wholePlans.grades:
 		outfile.write(grade.year+'\n')
 		for major in grade.majors:
@@ -100,4 +104,7 @@ def main():
 				outfile.write(str(course.item)+'\n')
 	outfile.close()
 	print('wirte completed.')
+#	to delete
+
+	
 main()
