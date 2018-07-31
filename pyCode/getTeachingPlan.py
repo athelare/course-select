@@ -1,3 +1,6 @@
+#Program function: Get all the teaching plans from the jw.cn and storge it in a file.
+
+
 import requests
 import getpass
 import re
