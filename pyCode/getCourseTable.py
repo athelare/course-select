@@ -28,6 +28,8 @@ def getSession():
     
 #public session for all functions.
 session = getSession()
+
+
 class lessonTime_Place:
     def __init__(self, week, time, place):
         self.week = week.text
@@ -81,6 +83,7 @@ def main():
             print(str(course_count)+' courses get.')
     #Storge Course Data
     print(str(course_count)+'coursed in total.\n\nWriting to file...')
+
     out_file = open('Course_infomation.txt','w')
     for item in courses:
 #       print(item.index+' '+item.name)
@@ -97,3 +100,6 @@ def main():
     print('File writing finished.')
 main()
 
+#Logout from the internet.
+session.get('http://jwdep.dhu.edu.cn/dhu/logout.jsp')
+#__END_OF_FILE

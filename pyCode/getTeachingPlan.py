@@ -30,20 +30,29 @@ session = getSession()
 
 class Course:
 	def __init__(self,csItem):
-		#to delete
-		self.item = csItem;
-		#to delete
+
 		self.type = csItem[0]
 		self.index = csItem[1]
 		self.name = csItem[2]
-		self.s1a = csItem[9]
-		self.s1b = csItem[10]
-		self.s2a = csItem[11]
-		self.s2b = csItem[12]
-		self.s3a = csItem[13]
-		self.s3b = csItem[14]
-		self.s4a = csItem[15]
-		self.s4b = csItem[16]
+		if(csItem[9] != ''):
+			self.semester = '1a'
+		elif(csItem[10]!= ''):
+			self.semester = '1b'
+		elif(csItem[11]!= ''):
+			self.semester = '2a'
+		elif(csItem[12]!= ''):
+			self.semester = '2b'
+		elif(csItem[13]!= ''):
+			self.semester = '3a'
+		elif(csItem[14]!= ''):
+			self.semester = '3b'
+		elif(csItem[15]!= ''):
+			self.semester = '4a'
+		elif(csItem[16]!= ''):
+			self.semester = '4b'
+		else:
+			self.semester = 'n'
+
 
 
 class Major:
@@ -75,13 +84,16 @@ class Grade:
 			'majorId':'110110'
 			}).text,'html.parser')
 		majorList = majorSelectPage.form.table.contents[5].findAll('option')
-#		self.majors.append(Major(year,majorList[0]['value'],Grade.ridPat.sub('',majorList[0].text)))
-		for item in majorList:
-			self.majors.append(Major(year,item['value'],Grade.ridPat.sub('',item.text)))
+
+#A STATEMENT TO TEST FUNCTION------------TO CHANGE LATER.
+		self.majors.append(Major(year,majorList[0]['value'],Grade.ridPat.sub('',majorList[0].text)))
+#		for item in majorList:
+#			self.majors.append(Major(year,item['value'],Grade.ridPat.sub('',item.text)))
 
 class WholePlan:
 	def __init__(self,gradeList):
 		self.grades = []
+#A STATEMENT TO TEST FUNCTION------------TO CHANGE LATER.
 #		self.grades.append(Grade(gradeList[0]))
 		for item in gradeList:
 			self.grades.append(Grade(item))
@@ -97,14 +109,16 @@ def main():
 	print('Writing to files...')
 	outfile = open('/home/lijiyu/course-select/getInfo/All_Teaching_Plan','w')
 	for grade in wholePlans.grades:
-		outfile.write(grade.year+'\n')
+#		outfile.write(grade.year+'\n')
 		for major in grade.majors:
-			outfile.write(major.index+'-'+major.name+'\n')
+#			outfile.write(major.index+'-'+major.name+'\n')
 			for course in major.courses:
-				outfile.write(str(course.item)+'\n')
+				outfile.write('(\''+grade.year+'\',\''+major.index+'\',\''+course.semester+'\',\''+course.type+'\',\''+course.index+'\',\''+course.name+'\',\''+course.semester+'\')\n')
 	outfile.close()
 	print('wirte completed.')
 #	to delete
 
 	
 main()
+session.get('http://jwdep.dhu.edu.cn/dhu/logout.jsp')
+#__END_OF_FILE
