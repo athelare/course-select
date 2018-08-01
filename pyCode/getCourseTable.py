@@ -4,6 +4,7 @@
 import requests
 import getpass
 import re
+import MySQLdb
 from bs4 import BeautifulSoup
 
 
@@ -51,7 +52,6 @@ class Lesson:
 class Course:
     def __init__(self, index, name, addr):
         self.name = name
-        self.int_index = int(index)
         self.index=index
         self.lessons = []
         
@@ -61,13 +61,13 @@ class Course:
         lesson_item = courseTable[1].find_all('tr',recursive=False)
         for i in range(1,len(lesson_item)):
             lesson_info_array = lesson_item[i].find_all('td')
-            time_place_info = lesson_info_array[7].find('table')
-            self.lessons.append(Lesson(int(lesson_info_array[0].text),lesson_info_array[6].text,time_place_info))
+            self.lessons.append(Lesson(lesson_info_array[0].text,lesson_info_array[6].text,lesson_info_array[7].find('table')))
 
 #TODO:Change Statements to storge in the database directely.
 def main():
-    
-    pageContent = session.get('http://jwdep.dhu.edu.cn/dhu/commonquery/selectcoursetermcourses.jsp?pageSize=10000&curPage=1')
+
+    #for test purpose, the size can be small.
+    pageContent = session.get('http://jwdep.dhu.edu.cn/dhu/commonquery/selectcoursetermcourses.jsp?pageSize=100000&curPage=1')
     pat = re.compile('courseId=(\d{6})&courseName=(.*?)"')
     contentsPairs = re.findall(pat,pageContent.text)
     #storge each individual course info.
@@ -82,24 +82,49 @@ def main():
         if (course_count%100 == 0):
             print(str(course_count)+' courses get.')
     #Storge Course Data
-    print(str(course_count)+'coursed in total.\n\nWriting to file...')
+    print(str(course_count)+'coursed in total.\n\nWriting to Database...')
 
-    out_file = open('Course_infomation.txt','w')
+    csdb = MySQLdb.connect('localhost','testu','123','cs',charset = 'utf8')
+    cur = csdb.cursor();
+    cur.execute('DROP TABLE IF EXISTS Course')
+    cur.execute('DROP TABLE IF EXISTS Lesson')
+    cur.execute('DROP TABLE IF EXISTS lessonTime')
+    cur.execute('CREATE TABLE lessonTime(lessonId char(12) NOT NULL,timeId int NOT NULL,PRIMARY KEY(lessonId,timeId))')
+    cur.execute('CREATE TABLE Lesson(courseId char(12)NOT NULL,lessonId char(12)NOT NULL,teacher char(15) CHARACTER SET utf8 DEFAULT NULL,PRIMARY KEY(courseId,lessonId),FOREIGN KEY(lessonId)REFERENCES lessonTime(lessonId))')
+    cur.execute('CREATE TABLE Course(courseId char(12)NOT NULL,name char(40) CHARACTER SET utf8 DEFAULT NULL,PRIMARY KEY(courseId),FOREIGN KEY(courseId)REFERENCES Lesson(courseId))')
+    
     for item in courses:
-#       print(item.index+' '+item.name)
+        for ls in item.lessons:
+            for it in range(len(ls.time_place)):
+                cur.execute('INSERT lessonTime VALUE(\''+ls.lessonIndex+'\',\''+str(it)+'\')')
+            #csdb.commit()
+            if(len(ls.time_place)>0):
+                cur.execute('INSERT Lesson VALUE(\''+item.index+'\',\''+ls.lessonIndex+'\',\''+ls.teacher+'\')')
+            else:
+                cur.execute('INSERT lessonTime VALUE(\''+ls.lessonIndex+'\',\'0\')')
+                cur.execute('INSERT Lesson VALUE(\''+item.index+'\',\''+ls.lessonIndex+'\',\'\')')
+            #csdb.commit()
+        cur.execute('INSERT Course VALUE(\''+item.index+'\',\''+item.name+'\')')
+        csdb.commit()
+    csdb.close()
+    print('Database writing finished.')
+
+'''
+    out_file = open('Course_infomation.txt','w')
+    db = 
+    for item in courses:
         out_file.write(item.index+','+item.name+':\n')
         for ls in item.lessons:
-#           print('    '+str(ls.lessonIndex)+' '+ ls.teacher)
             out_file.write(str(ls.lessonIndex)+','+ ls.teacher+',')
             for tp in ls.time_place:
-#               print('        '+tp.week+' '+tp.time+' '+tp.place)
                 out_file.write(tp.week+','+tp.time+','+tp.place+';')
             out_file.write('\n')
         out_file.write('#\n')
     out_file.close()
     print('File writing finished.')
+'''
 main()
 
-#Logout from the internet.
+#Logout from the website.
 session.get('http://jwdep.dhu.edu.cn/dhu/logout.jsp')
 #__END_OF_FILE

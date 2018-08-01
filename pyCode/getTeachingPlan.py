@@ -1,9 +1,9 @@
 #Program function: Get all the teaching plans from the jw.cn and storge it in a file.
 
-
 import requests
 import getpass
 import re
+import MySQLdb
 from bs4 import BeautifulSoup
 
 #Often used variable:
@@ -54,7 +54,7 @@ class Course:
 		elif(csItem[16]!= ''):
 			self.semester = '4b'
 		else:
-			self.semester = 'n'
+			self.semester = ''
 
 
 
@@ -89,9 +89,9 @@ class Grade:
 		majorList = majorSelectPage.form.table.contents[5].findAll('option')
 
 #A STATEMENT TO TEST FUNCTION------------TO CHANGE LATER.
-		self.majors.append(Major(year,majorList[0]['value'],Grade.ridPat.sub('',majorList[0].text)))
-#		for item in majorList:
-#			self.majors.append(Major(year,item['value'],Grade.ridPat.sub('',item.text)))
+#		self.majors.append(Major(year,majorList[0]['value'],Grade.ridPat.sub('',majorList[0].text)))
+		for item in majorList:
+			self.majors.append(Major(year,item['value'],Grade.ridPat.sub('',item.text)))
 
 class WholePlan:
 	def __init__(self,gradeList):
@@ -108,17 +108,42 @@ def main():
 	wholePlans = WholePlan(gradeList)
 	print('Data access completed.')
 
-#	to delete
-	print('Writing to files...')
-	outfile = open('/home/lijiyu/course-select/getInfo/All_Teaching_Plan','w')
-	for grade in wholePlans.grades:
-#		outfile.write(grade.year+'\n')
-		for major in grade.majors:
-#			outfile.write(major.index+'-'+major.name+'\n')
-			for course in major.courses:
-				outfile.write('(\''+grade.year+'\',\''+major.index+'\',\''+course.semester+'\',\''+course.type+'\',\''+course.index+'\',\''+course.name+'\',\''+course.semester+'\')\n')
-	outfile.close()
+
+	print('Writing to Database...')
+	db = MySQLdb.connect('localhost','testu','123','cs',charset = 'utf8')
+	cur = db.cursor()
+	cur.execute('DROP TABLE IF EXISTS TeachPlan')
+	cur.execute('''
+		CREATE TABLE TeachPlan(
+			gradeId char(7),
+			majorId char(20),
+			semesterId char(5),
+			courseId char(10),
+			courseType char(10) CHARACTER SET utf8,
+			PRIMARY KEY(gradeId,majorId,semesterId,courseId),
+			FOREIGN KEY(courseId)REFERENCES Course(courseId)
+		)''')
+
+	for igrade in wholePlans.grades:
+		for imajor in igrade.majors:
+			for icourse in imajor.courses:
+				if('a' in icourse.semester):
+					cur.execute('INSERT IGNORE TeachPlan VALUE(\''+igrade.year+'\',\''+imajor.index+'\',\''+icourse.semester+'\',\''+icourse.index+'\',\''+icourse.type+'\')')
+					db.commit()
+	db.commit()
 	print('wirte completed.')
+
+#	to delete
+#	print('Writing to files...')
+#	outfile = open('/home/lijiyu/course-select/getInfo/All_Teaching_Plan','w')
+#	for igrade in wholePlans.grades:
+#		outfile.write(grade.year+'\n')
+#		for imajor in igrade.majors:
+#			outfile.write(major.index+'-'+major.name+'\n')
+#			for icourse in imajor.courses:
+#				outfile.write('(\''+igrade.year+'\',\''+imajor.index+'\',\''+icourse.semester+'\',\''+icourse.type+'\',\''+icourse.index+'\',\''+icourse.name+'\')\n')
+#	outfile.close()
+#	print('wirte completed.')
 #	to delete
 
 	
