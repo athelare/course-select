@@ -12,8 +12,8 @@ selectGradeMajorPage = 'http://jwdep.dhu.edu.cn/dhu/commonquery/selectgradeyearm
 #A function to get loggin session and storge it into a public session variable.
 def getSession():
     login_url = 'http://jwdep.dhu.edu.cn/dhu/login_wz.jsp'
-    stuID = input('Load All_Teaching_Plan to local file.\nStudent ID:')
-    passwd = getpass.getpass()
+    stuID = input('---导入教学计划信息---.\n学号:')
+    passwd = getpass.getpass('密码：')
     session = requests.Session()
     #post data to get session
     response = session.post(login_url,{
@@ -22,10 +22,10 @@ def getSession():
         })
     #Check Login status:
     if '补考成绩记录查询' in response.text:
-        print('\nLogin successfully!\nAccessing data...\n')
+        print('\n登陆成功!\n开始读取信息...\n')
         return session
     else:
-        print('\nLogin failed!\nPlease try again later...\n')
+        print('\n登录失败!\n请稍后再次尝试...\n')
         quit()
     
 #public session for all functions.
@@ -106,10 +106,10 @@ def main():
 	gradePat = re.compile('\d{4}a')
 	gradeList = re.findall(gradePat,selectPage.form.table.contents[3].text)
 	wholePlans = WholePlan(gradeList)
-	print('Data access completed.')
+	print('数据获取完毕.')
 
 
-	print('Writing to Database...')
+	print('写入数据...')
 	db = MySQLdb.connect('localhost','testu','123','cs',charset = 'utf8')
 	cur = db.cursor()
 	cur.execute('DROP TABLE IF EXISTS TeachPlan')
@@ -127,11 +127,10 @@ def main():
 	for igrade in wholePlans.grades:
 		for imajor in igrade.majors:
 			for icourse in imajor.courses:
-				if('a' in icourse.semester):
-					cur.execute('INSERT IGNORE TeachPlan VALUE(\''+igrade.year+'\',\''+imajor.index+'\',\''+icourse.semester+'\',\''+icourse.index+'\',\''+icourse.type+'\')')
-					db.commit()
+				cur.execute('INSERT IGNORE TeachPlan VALUE(\''+igrade.year+'\',\''+imajor.index+'\',\''+icourse.semester+'\',\''+icourse.index+'\',\''+icourse.type+'\')')
+				db.commit()
 	db.commit()
-	print('wirte completed.')
+	print('数据写入完毕.')
 
 #	to delete
 #	print('Writing to files...')
@@ -145,8 +144,8 @@ def main():
 #	outfile.close()
 #	print('wirte completed.')
 #	to delete
-
 	
 main()
 session.get('http://jwdep.dhu.edu.cn/dhu/logout.jsp')
+print('Bye')
 #__END_OF_FILE

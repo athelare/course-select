@@ -6,6 +6,8 @@ DROP TABLE IF EXISTS lessonTime
 CREATE TABLE lessonTime(
 	lessonId char(12) NOT NULL,
 	timeId char(3)NOT NULL,
+	week1 BIGINT,
+	week2 BIGINT,
 	PRIMARY KEY(lessonId,timeId)
 )
 
