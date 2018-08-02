@@ -60,8 +60,8 @@ class Course:
 
 class Major:
 	majorPage = 'http://jwdep.dhu.edu.cn/dhu/commonquery/teachschemasquery.jsp'
-	csPat = re.compile('<tr><td>(.{4})</td><td>(\d{6})</td><td>(.*?)</td><td>(.*?)</td><td>(.*?)</td><td>(.*?)</td><td>(.*?)</td><td>(.*?)</td><td>(.*?)</td><td>(.*?)</td><td>(.*?)</td><td>(.*?)</td><td>(.*?)</td><td>(.*?)</td><td>(.*?)</td><td>(.*?)</td><td>(.*?)</td>')
-	ridPat = re.compile('\s|&nbsp;')
+	csPat = re.compile(r'<tr><td>(.{4})</td><td>(\d{6})</td><td>(.*?)</td><td>(.*?)</td><td>(.*?)</td><td>(.*?)</td><td>(.*?)</td><td>(.*?)</td><td>(.*?)</td><td>(.*?)</td><td>(.*?)</td><td>(.*?)</td><td>(.*?)</td><td>(.*?)</td><td>(.*?)</td><td>(.*?)</td><td>(.*?)</td>')
+	ridPat = re.compile(r'\s|&nbsp;')
 	def __init__(self,gradeYear,majorIndex,majorName):
 		self.name = majorName
 		self.index = majorIndex
@@ -78,7 +78,7 @@ class Major:
 
 #Storge teaching plan by grade.
 class Grade:
-	ridPat = re.compile('\s|\d')
+	ridPat = re.compile(r'\s|\d')
 	def __init__(self,year):
 		self.majors = []
 		self.year = year
@@ -103,7 +103,7 @@ class WholePlan:
 
 def main():
 	selectPage = BeautifulSoup(session.get(selectGradeMajorPage).text,'html.parser')
-	gradePat = re.compile('\d{4}a')
+	gradePat = re.compile(r'\d{4}a')
 	gradeList = re.findall(gradePat,selectPage.form.table.contents[3].text)
 	wholePlans = WholePlan(gradeList)
 	print('数据获取完毕.')

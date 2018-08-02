@@ -32,7 +32,7 @@ session = getSession()
 
 
 class lessonTime_Place:
-    time_pat = re.compile('\d+')
+    time_pat = re.compile(r'\d+')
     def __init__(self, week, time, place):
         self.week1=0
         self.week2=0
@@ -94,24 +94,25 @@ def main():
 
     #for test purpose, the size can be small.
     pageContent = session.get('http://jwdep.dhu.edu.cn/dhu/commonquery/selectcoursetermcourses.jsp?pageSize=10000&curPage=1')
-    pat = re.compile('courseId=(\d{6})&courseName=(.*?)"')
+    pat = re.compile(r'courseId=(\d{6})&courseName=(.*?)"')
     contentsPairs = re.findall(pat,pageContent.text)
     #storge each individual course info.
     courses = []
     #Write infomation into a file.
 
     course_count = 0
-    print('正在收集信息...')
+    print('正在收集开课信息...')
     for item in contentsPairs:
         courses.append(Course(item[0], item[1], 'http://jwdep.dhu.edu.cn/dhu/commonquery/coursetimetableinfo.jsp?courseId=' + item[0]))
         course_count+=1
         if (course_count%100 == 0):
-            print('已经获取 '+str(course_count)+' 个课程信息。')
+            print('已经获取 '+str(course_count)+' 条记录。')
     #Storge Course Data
     print('总共获得 '+str(course_count)+' 个课程信息。\n\n写入数据库ing...')
 
     csdb = MySQLdb.connect('localhost','testu','123','cs',charset = 'utf8')
     cur = csdb.cursor()
+    cur.execute('DROP TABLE IF EXISTS TeachPlan')
     cur.execute('DROP TABLE IF EXISTS Course')
     cur.execute('DROP TABLE IF EXISTS Lesson')
     cur.execute('DROP TABLE IF EXISTS lessonTime')
@@ -158,7 +159,6 @@ def main():
 
 '''
     out_file = open('Course_infomation.txt','w')
-    db = 
     for item in courses:
         out_file.write(item.index+','+item.name+':\n')
         for ls in item.lessons:
