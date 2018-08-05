@@ -9,7 +9,7 @@
  
 ## 实现概述
 ### 获取课程信息
-####使用Python工具来解析教务网页
+#### 使用Python工具来解析教务网页
 1. 使用requests工具通过管理员的学号密码登入教务系统
 2. 使用BeautifulSoup和re来解析网页内容，提取网页信息
 3. 使用MySQLdb来实现python3和MySQL之间的信息交互
