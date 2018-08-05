@@ -1,3 +1,4 @@
+#!/usr/bin/python3
 #Program function: Get all the teaching plans from the jw.cn and storge it in a file.
 
 import requests
@@ -110,7 +111,7 @@ def main():
 
 
 	print('写入数据...')
-	db = MySQLdb.connect('localhost','testu','123','cs',charset = 'utf8')
+	db = MySQLdb.connect('localhost','testu','123','raw_cs_info',charset = 'utf8')
 	cur = db.cursor()
 	cur.execute('DROP TABLE IF EXISTS TeachPlan')
 	cur.execute('''

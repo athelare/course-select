@@ -1,3 +1,4 @@
+#!/usr/bin/python3
 #Program function: Login to jwdep.cn and access all course infomation via the website.
 #dependence : requests and BeautifulSoup and getpass.
 
