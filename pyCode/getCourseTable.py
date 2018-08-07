@@ -121,7 +121,7 @@ def main():
     #Storge Course Data
     print('总共获得 '+str(course_count)+' 个课程信息。\n\n写入数据库ing...')
 
-    csdb = MySQLdb.connect('localhost','testu','123','raw_cs_info',charset = 'utf8')
+    csdb = MySQLdb.connect('localhost','testu','123','cs',charset = 'utf8')
     cur = csdb.cursor()
     print('删库ing\n重新定义数据库')
     cur.execute('DROP TABLE IF EXISTS TeachPlan')
@@ -132,7 +132,7 @@ def main():
         CREATE TABLE lessonTime(
             lessonId CHAR(8) NOT NULL,
             timeId TINYINT NOT NULL,
-            time CHAR(20)CHARACTER SET utf8,
+            time CHAR(30)CHARACTER SET utf8,
             place CHAR(12)CHARACTER SET utf8,
             week1 BIGINT UNSIGNED,
             week2 BIGINT UNSIGNED,
@@ -166,7 +166,7 @@ def main():
                     'INSERT lessonTime(lessonId,timeId,time,place,week1,week2) VALUE(\''+
                     ls.lessonIndex+'\',\''+
                     str(it+1)+'\',\''+
-                    ls.time_place[it].time[:20]+'\',\''+
+                    ls.time_place[it].time[:30]+'\',\''+
                     ls.time_place[it].place[:12]+'\',\''+
                     str(ls.time_place[it].week1)+'\',\''+
                     str(ls.time_place[it].week2)+'\')')

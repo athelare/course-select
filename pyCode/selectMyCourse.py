@@ -8,7 +8,7 @@ candidateLesson =[]
 
 resultList = []
 Max_Conflict = int(2*float(input('请输入最大的冲突学分数： ')))
-db = mysql.connect('localhost','testu','123','raw_cs_info',charset = 'utf8')
+db = mysql.connect('localhost','testu','123','cs',charset = 'utf8')
 cur = db.cursor()
 
 ofile = open('/home/lijiyu/course-select/getInfo/myCoursePlan.txt','w')
@@ -32,7 +32,7 @@ def searchLesson(curIndex,sumHalfA,sumHalfB,conflictNum):
         for item in selectedLessons:
             tmp.append(item)
         resultList.append(tmp)
-#        ofile.write(str(tmp)+'\n')
+        ofile.write(str(tmp)+'\n')
         ofile.write(bin(sumHalfA)+','+bin(sumHalfB)+'\n')
 #        ofile.write('冲突学分数: '+ str(conflictNum/2)+'\n')
 #        if (lessonCount > 1000):
@@ -67,7 +67,6 @@ def Sample_input():
             if(ns>0 and ns<=len(lesson_Course)):
                 candidateLesson[-1].append(lesson_Course[ns-1])
 def main():
-
     Sample_input()
     searchLesson(0,0,0,0)
     ofile.close()

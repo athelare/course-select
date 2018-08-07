@@ -111,13 +111,14 @@ def main():
 
 
 	print('写入数据...')
-	db = MySQLdb.connect('localhost','testu','123','raw_cs_info',charset = 'utf8')
+	db = MySQLdb.connect('localhost','testu','123','cs',charset = 'utf8')
 	cur = db.cursor()
 	cur.execute('DROP TABLE IF EXISTS TeachPlan')
 	cur.execute('''
 		CREATE TABLE TeachPlan(
 			gradeId char(7),
 			majorId char(20),
+			majorName char(20) CHARACTER SET utf8,
 			semesterId char(5),
 			courseId char(10),
 			courseType char(10) CHARACTER SET utf8,
@@ -128,8 +129,16 @@ def main():
 	for igrade in wholePlans.grades:
 		for imajor in igrade.majors:
 			for icourse in imajor.courses:
-				cur.execute('INSERT IGNORE TeachPlan VALUE(\''+igrade.year+'\',\''+imajor.index+'\',\''+icourse.semester+'\',\''+icourse.index+'\',\''+icourse.type+'\')')
-				db.commit()
+				if(icourse.semester!= ''):
+					cur.execute(
+						'INSERT IGNORE TeachPlan VALUE(\''+
+						igrade.year+'\',\''+
+						imajor.index+'\',\''+
+						imajor.name+'\',\''+
+						icourse.semester+'\',\''+
+						icourse.index+'\',\''+
+						icourse.type+'\')')
+					db.commit()
 	db.commit()
 	print('数据写入完毕.')
 
