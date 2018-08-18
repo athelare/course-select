@@ -105,7 +105,7 @@
 		"<input type = \"hidden\" name = \"csf\" value = \"1\">".
 		"<input type = \"submit\" name = \"cs\" value = \"选择\"></form></td></tr>\n";
 	}
-	echo "</table>"."*注:以上仅显示本学期开设的课程。";
+	echo "<tfoot><tr><td colspan = 5>*注:以上仅显示本学期开设的课程。</td></tr></tfoot></table>";
 	}else{
 	echo "没有搜索结果</br>";
 	}

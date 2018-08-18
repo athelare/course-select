@@ -15,35 +15,39 @@
  }
 </script>
 <html>
+<head>
 <style type="text/css"> 
-	.whole{width:1000px;margin:auto;border:2px solid #000066;background-color:#99cc99;overflow:hidden;}
-    .main{margin-left:auto;width:800px;float:left;}
+	.whole{margin:auto;width:800px;border:0px;background-color:white;overflow:hidden;}
+    .main{margin-left:auto;width:600px;float:left;}
 </style>
+<link rel="stylesheet" type="text/css" href="tablestyle.css">
 <title>选择开课班级</title>
-<div class = "whole" align = "center">
-    <form action = "" name = "chooseClass">
+</head>
+<div class = whole align = "center">
+    <form action = "begin.php" method = "post" name = "chooseClass">
         <?php
             foreach($_SESSION['selectedCS'] as $csId){
-                echo "<div class = \"main\">";
+                $_SESSION[$csId] = $_POST[$csId];
+                echo "<div class = main>";
                 $result = $db -> query("SELECT name FROM Course WHERE courseId = ".$csId);
                 echo $result->fetch_assoc()['name'].'<br>';
-                echo "<table><tr><td>教师</td><td>选课建议</td><td>上课时间地点</td><td>
-                <input type = \"checkBox\" onchange = \"selecAll('".$csId."')\">
-                </td></tr>";
+                echo "<table class = zebra><thead><tr><th>教师</th><th>选课建议</th><th>上课时间地点</th><th>
+                <input type = checkBox onchange = selecAll('".$csId."[]')>
+                </th></tr></thead>";
                 $result = $db -> query("SELECT lessonId,teacher,recommend FROM Lesson WHERE courseId = ".$csId);
                     while($row = $result->fetch_assoc()){
-                        echo "<tr><td>".$row['teacher']."</td><td>".$row['recommend']."</td><td><table>";
+                        echo "<tr><td>".$row['teacher']."</td><td>".$row['recommend']."</td><td>";
                         $timer = $db -> query("SELECT time,place FROM lessonTime WHERE lessonId = ".$row['lessonId']);
                         while($trow = $timer -> fetch_assoc()){
-                            echo "<tr><td>".$trow['time']."</td><td>".$trow['place']."</td></tr>";
+                            echo $trow['time']." ".$trow['place']."<br>";
                         }
-                        echo"</table></td>";
-                        echo"<td><input type = \"checkbox\" name = \"".$csId."\" value = \"".$csId."\"></td></tr>";
+                        echo"</td>";
+                        echo"<td><input type = checkbox name = ".$csId."[] value = \"".$row['lessonId']."\"></td></tr>";
                     }
-
                 echo "</table></div>";
             }
         ?>
+    <div><input type = submit value = 确定><div>
     </form>
 </div>
 </html>
