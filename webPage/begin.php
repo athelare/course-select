@@ -13,18 +13,51 @@
 
 -->
 <html>
+<head>
+    <title>选课结果</title>
+</head>
 <?php
-    foreach($_SESSION["selectedCS"]as $courseId){
-        foreach($_POST[$courseId]as $lessonId){
-            $result = $db->query("SELECT halfA,halfB from Lesson where lessonId = ".$lessonId);
-            while($row = $result->fetch_assoc()){
-                $halfA[$lessonId] = $row['halfA'];
-                $halfB[$lessonId] = $row['halfB'];
-            }
+function count1($a){
+    $n=0;
+    while($a!=0){
+        $a&=($a-1);
+        $n++;
+    }
+    return $n;
+}
+$Max_Conflict = 0;
+$N = sizeof($_SESSION['selectedCS']);
+$selectedLessons = [];
+function searchLesson($curIndex,$sumHalfA,$sumHalfB,$conflictNum){
+    global $N,$selectedLessons;
+    if($conflictNum > $Max_Conflict)return;
+    if($curIndex == $N){
+        print_r($selectedLessons);
+        echo'<br />';
+        return;
+    }
+    for($i=0;$i<sizeof($_POST[$_SESSION['selectedCS'][$curIndex]]);++$i){
+        $lsId = $_POST[$_SESSION['selectedCS'][$curIndex]][$i];
+        array_push($selectedLessons,$lsId);
+        searchLesson(
+            $curIndex +1 ,
+            $halfA[$lsId] | $sunHalfA,
+            $halfB[$lsId] | $sunHalfB ,
+            $conflictNum + count1($halfA[$lsId] & $sunHalfA)+count1($halfB[$lsId] & $sunHalfB)
+        );
+        array_pop($selectedLessons);
+    }
+}
+/*-----------------------------------------------------------------*/
+foreach($_SESSION["selectedCS"]as $courseId){
+    foreach($_POST[$courseId]as $lessonId){
+        $result = $db->query("SELECT halfA,halfB from Lesson where lessonId = ".$lessonId);
+        while($row = $result->fetch_assoc()){
+            $halfA[$lessonId] = $row['halfA'];
+            $halfB[$lessonId] = $row['halfB'];
         }
     }
-    foreach($halfA as $ha){
-        echo $ha.'<br>';
-    }
+}
+searchLesson(0,0,0,0);
 ?>
 </html>
