@@ -25,15 +25,21 @@ function count1($a){
     }
     return $n;
 }
+$planRecord=0;
 $Max_Conflict = 0;
 $N = sizeof($_SESSION['selectedCS']);
 $selectedLessons = [];
 function searchLesson($curIndex,$sumHalfA,$sumHalfB,$conflictNum){
+    if($planRecord >=100)return;
     global $N,$selectedLessons;
     if($conflictNum > $Max_Conflict)return;
     if($curIndex == $N){
         print_r($selectedLessons);
         echo'<br />';
+        $planRecord++;
+        if($planRecord >= 100){
+            echo '可行的选课方案太多（>=100)，不需要本软件协助）<br />';
+        }
         return;
     }
     for($i=0;$i<sizeof($_POST[$_SESSION['selectedCS'][$curIndex]]);++$i){
