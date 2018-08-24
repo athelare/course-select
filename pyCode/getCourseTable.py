@@ -37,6 +37,8 @@ class lessonTime_Place:
     def __init__(self, week, time, place):
         self.time = time
         self.place = place
+        #raw week info.
+        self.rweek = week
         self.week1 = 0
         self.week2 = 0
         num_time = re.findall(lessonTime_Place.time_pat,time)
@@ -134,6 +136,7 @@ def main():
             timeId TINYINT NOT NULL,
             time CHAR(30)CHARACTER SET utf8,
             place CHAR(12)CHARACTER SET utf8,
+            week CHAR(12)CHARACTER SET utf8,
             week1 BIGINT UNSIGNED,
             week2 BIGINT UNSIGNED,
             PRIMARY KEY(lessonId,timeId)
@@ -163,11 +166,12 @@ def main():
         for ls in item.lessons:
             for it in range(len(ls.time_place)):
                 cur.execute(
-                    'INSERT lessonTime(lessonId,timeId,time,place,week1,week2) VALUE(\''+
+                    'INSERT lessonTime(lessonId,timeId,time,place,week,week1,week2) VALUE(\''+
                     ls.lessonIndex+'\',\''+
                     str(it+1)+'\',\''+
                     ls.time_place[it].time[:30]+'\',\''+
                     ls.time_place[it].place[:12]+'\',\''+
+                    ls.time_place[it].rweek[:12]+'\',\''+
                     str(ls.time_place[it].week1)+'\',\''+
                     str(ls.time_place[it].week2)+'\')')
             if(len(ls.time_place) == 0):#如果没有开课时间的记录，就添加一条空记录，便于课程的插入（因为必须有一条主键）
