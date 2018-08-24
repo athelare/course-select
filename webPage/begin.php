@@ -27,7 +27,7 @@ function count1($a){
 }
 $planRecord = [];
 $planCount=0;
-$Max_Conflict = 0;
+$Max_Conflict = (int)(2*(float)$_POST['MaxConflict']);
 $N = sizeof($_SESSION['selectedCS']);
 $selectedLessons = [];
 function searchLesson($curIndex,$sumHalfA,$sumHalfB,$conflictNum){
@@ -39,7 +39,7 @@ function searchLesson($curIndex,$sumHalfA,$sumHalfB,$conflictNum){
         foreach($selectedLessons as $sels)array_push($planRecord[$planCount],$sels);
         $planCount++;
         if($planCount >= 100){
-            echo '可行的选课方案大于等于，几乎可以随便选课.<br />';
+            echo '可行的选课方案大于等于100，几乎可以随便选课.<br />';
         }
         return;
     }
@@ -56,9 +56,11 @@ function searchLesson($curIndex,$sumHalfA,$sumHalfB,$conflictNum){
     }
 }
 function printLessonTable($lessonSet){
-    global $halfA,$halfB;
+    global $halfA,$halfB,$db;
+    $lessonTimeId=[];
     $lessonTable = [];
     $used = [];
+    /*-------------Init data--------------------*/
     for($i=0;$i<5;++$i){
         array_push($lessonTable,[]);
         for($j=0;$j<=13;++$j){
@@ -70,7 +72,9 @@ function printLessonTable($lessonSet){
         array_push($used,[]);
         for($j=0;$j<=13;++$j)array_push($lessonTable[$i],0);
     }
+    /*---------------------------------------------*/
     foreach($lessonSet as $ls){
+        $lessonTimeId[$ls]=0;
         for($i=0;$i<64;++$i){
             if(((1<<$i) & $halfA[$ls]) != 0 || (((1<<$i) & $halfB[$ls])!=0)){
                 $j = $i;
@@ -113,7 +117,12 @@ function printLessonTable($lessonSet){
             if($lessonTable[$j][$i]['mxrow']){
                 echo'<td rowspan='.$lessonTable[$j][$i]['mxrow'].'>';
                 foreach($lessonTable[$j][$i]['ls'] as $lesson ){
-                    echo $lesson.'<br>';
+                    $rst = $db->query("SELECT courseId FROM Lesson WHERE lessonId = ".$lesson);
+                    $rst = $db->query("SELECT name from Course WHERE courseId = ".$rst->fetch_assoc()['courseId']);
+                    echo $rst->fetch_assoc()['name']." ";
+                    $rst = $db->query("SELECT week,place FROM lessonTime WHERE lessonId = ".$lesson." and timeId = ".++$lessonTimeId[$lesson]);
+                    $row = $rst->fetch_assoc();
+                    echo $row['week']." ".$row['place']."<br />";
                 }
                 echo'</td>';
             }

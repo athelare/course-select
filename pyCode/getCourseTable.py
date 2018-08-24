@@ -199,7 +199,7 @@ main()
 #从网站登出
 session.get('http://jwdep.dhu.edu.cn/dhu/logout.jsp')
 print('Bye')
-#__END_OF_FILE
+#__END_OF_FILE 
 
 
 
