@@ -117,11 +117,12 @@ function printLessonTable($lessonSet){
             if($lessonTable[$j][$i]['mxrow']){
                 echo'<td rowspan='.$lessonTable[$j][$i]['mxrow'].'>';
                 foreach($lessonTable[$j][$i]['ls'] as $lesson ){
-                    $rst = $db->query("SELECT courseId FROM Lesson WHERE lessonId = ".$lesson);
-                    $rst = $db->query("SELECT name from Course WHERE courseId = ".$rst->fetch_assoc()['courseId']);
-                    echo $rst->fetch_assoc()['name']." ";
-                    $rst = $db->query("SELECT week,place FROM lessonTime WHERE lessonId = ".$lesson." and timeId = ".++$lessonTimeId[$lesson]);
-                    $row = $rst->fetch_assoc();
+                    $result = $db->query("SELECT courseId,teacher FROM Lesson WHERE lessonId = ".$lesson);
+                    $row = $result->fetch_assoc();
+                    $result = $db->query("SELECT name from Course WHERE courseId = ".$row['courseId']);
+                    echo $result->fetch_assoc()['name']." ".$row['teacher']." ";
+                    $result = $db->query("SELECT week,place FROM lessonTime WHERE lessonId = ".$lesson." and timeId = ".++$lessonTimeId[$lesson]);
+                    $row = $result->fetch_assoc();
                     echo $row['week']." ".$row['place']."<br />";
                 }
                 echo'</td>';
@@ -146,16 +147,11 @@ echo "<h3 align = center>总共方案数：".$planCount.'。</h3>';
 
 
 foreach($planRecord as $pl){
-    echo'<p>';
+    echo'<p><table><tr><td>';
     printLessonTable($pl);
-    echo'</p>';
+    echo'</td></tr></table></p>';
 }
 
-foreach($planRecord as $plan){
-    echo'<pre>';
-    print_r($plan);
-    echo'</pre><br>';
-}
 
 ?>
 </html>
