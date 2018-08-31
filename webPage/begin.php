@@ -142,8 +142,14 @@ foreach($_SESSION["selectedCS"]as $courseId){
         }
     }
 }
-searchLesson(0,0,0,0);
-echo "<h3 align = center>总共方案数：".$planCount.'。</h3>';
+while(true){
+    searchLesson(0,0,0,0);
+    if($planCount==0){
+        echo"当前学分冲突数 ".($Max_Conflict/2)." 下无可行方案，尝试增加 0.5 个学分冲突上限。<br />";
+        $Max_Conflict++;
+    }else break;
+}
+echo "<h3 align = center>总共方案数：".$planCount.'。冲突学分： '.($Max_Conflict/2).'</h3>';
 
 
 foreach($planRecord as $pl){
