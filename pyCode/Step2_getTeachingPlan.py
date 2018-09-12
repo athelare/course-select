@@ -29,7 +29,7 @@ def getSession():
         print('\n登录失败!\n请稍后再次尝试...\n')
         quit()
     
-#public session for all functions.
+
 session = getSession()
 
 class Course:
@@ -101,13 +101,14 @@ class WholePlan:
 #		self.grades.append(Grade(gradeList[0]))
 		for item in gradeList:
 			self.grades.append(Grade(item))
+			print(item+ '级教学计划获取完毕。')
 
 def main():
 	selectPage = BeautifulSoup(session.get(selectGradeMajorPage).text,'html.parser')
 	gradePat = re.compile(r'\d{4}a')
 	gradeList = re.findall(gradePat,selectPage.form.table.contents[3].text)
 	wholePlans = WholePlan(gradeList)
-	print('数据获取完毕.')
+	print('所有教学计划信息获取完毕.')
 
 
 	print('写入数据...')
@@ -157,19 +158,6 @@ def main():
 
 	db.commit()
 	print('数据写入完毕.')
-
-#	to delete
-#	print('Writing to files...')
-#	outfile = open('/home/lijiyu/course-select/getInfo/All_Teaching_Plan','w')
-#	for igrade in wholePlans.grades:
-#		outfile.write(grade.year+'\n')
-#		for imajor in igrade.majors:
-#			outfile.write(major.index+'-'+major.name+'\n')
-#			for icourse in imajor.courses:
-#				outfile.write('(\''+igrade.year+'\',\''+imajor.index+'\',\''+icourse.semester+'\',\''+icourse.type+'\',\''+icourse.index+'\',\''+icourse.name+'\')\n')
-#	outfile.close()
-#	print('wirte completed.')
-#	to delete
 	
 main()
 session.get('http://jwdep.dhu.edu.cn/dhu/logout.jsp')

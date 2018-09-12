@@ -27,8 +27,7 @@ def getSession():
     else:
         print('\n登录失败!\n请检查用户名和密码，以及网络连接...\n')
         quit()
-    
-#public session for all functions.
+#公共会话变量，供所有之后的函数访问，最后使用它退出登录
 session = getSession()
 
 
@@ -37,15 +36,16 @@ class lessonTime_Place:
     def __init__(self, week, time, place):
         self.time = time
         self.place = place
-        #raw week info.
+        #原始开课周次信息
         self.rweek = week
+        #另一种表示开课周次的信息：通过对一些关键词的筛选，确定课程是否在前半个学期开课以及是否在后半个学期开课
         self.week1 = 0
         self.week2 = 0
         num_time = re.findall(lessonTime_Place.time_pat,time)
         num_week = re.findall(lessonTime_Place.time_pat,week)
         self.place = place.text.rstrip()
         t=0
-        #将开课时间信息存储到二进制位里面
+        #将开课时间（周几的第几节课）信息存储到二进制位里面，使用六十四位以内的数值
         if('一' in time):
             for item in num_time:
                 t |= (1<<(int(item)-1))
@@ -126,6 +126,8 @@ def main():
     csdb = MySQLdb.connect('localhost','testu','123','cs',charset = 'utf8')
     cur = csdb.cursor()
     print('删库ing\n重新定义数据库')
+    cur.execute('DROP TABLE IF EXISTS GradeMajor')
+    cur.execute('DROP TABLE IF EXISTS SpecialCourses')
     cur.execute('DROP TABLE IF EXISTS TeachPlan')
     cur.execute('DROP TABLE IF EXISTS Course')
     cur.execute('DROP TABLE IF EXISTS Lesson')
