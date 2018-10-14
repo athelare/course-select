@@ -39,8 +39,9 @@
         </td></tr></table>
     <div>
         <?php
-            foreach($_SESSION['selectedCS'] as $csId){
-                $_SESSION[$csId] = $_POST[$csId];
+            $_SESSION['selectedCS']=[];
+            foreach($_GET['selectedCS'] as $csId){
+                array_push($_SESSION['selectedCS'],$csId);
                 echo "<div class = main>";
                 $result = $db -> query("SELECT name FROM Course WHERE courseId = ".$csId);
                 echo "<h3>".$result->fetch_assoc()['name'].'</h3>';

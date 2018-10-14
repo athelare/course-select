@@ -1,0 +1,192 @@
+<!DOCTYPE html> 
+<script language="javascript">
+function chooseThis(csId,name){
+    document.getElementById("ef").style.display="none";
+    document.getElementById("postb").style.display="";
+    var choiceTable = document.getElementById("already");
+    for(var r = 0;r<choiceTable.rows.length;++r)if(csId == choiceTable.rows[r].cells[0].innerHTML)return;
+    choiceTable.insertRow().innerHTML='<td>'+csId+'</td><td>'+name+'</td><td><input type = button value = "删除" onclick = deleteChoice("'+csId+'")></td>';
+}
+function chooseAll(){
+    var info = document.getElementById("mainTable");
+    for (var i =1;i<info.rows.length-1;++i) {
+        chooseThis(info.rows[i].cells[0].innerHTML,info.rows[i].cells[1].innerHTML);
+    }
+}
+function jsGet(){
+    var param='';
+    var info = document.getElementById("already");
+    for (var i =0;i<info.rows.length;++i) {
+        param +='selectedCS[]='+info.rows[i].cells[0].innerHTML;
+        if(i<info.rows.length-1)param+='&';
+    }
+    window.open('csclass.php?'+param);
+    /*
+    var frm = document.createElement("form");
+    var info = document.getElementById("already");
+    frm.action = "csclass.php";
+    frm.method = "post";
+    frm.style.display = "none";
+    frm.target = "_blank";
+
+    for (var i =0;i<info.rows.length;++i) {
+        var inp = document.createElement("textarea");
+        inp.name="selectedCS[]";
+        inp.value = info.rows[i].cells[0].innerHTML;
+        frm.appendChild(inp);
+    }
+
+    document.body.appendChild(frm);
+    frm.fireEvent("onsubmit");
+    frm.submit();
+    */
+}
+
+function deleteChoice(csId){
+    var choiceTable = document.getElementById("already");
+    for(var r = 0;r<choiceTable.rows.length;++r)if(csId == choiceTable.rows[r].cells[0].innerHTML){
+        choiceTable.deleteRow(r);
+        if(choiceTable.rows.length == 0){
+            document.getElementById("ef").style.display="";
+            document.getElementById("postb").style.display="none";
+        }
+        return;
+    }
+}
+function selectAll(a){
+    o=document.getElementsByName(a)
+    for(i=0;i<o.length;i++)
+        o[i].checked=event.srcElement.checked
+ }
+function openChoice(tid){
+    document.getElementById("mainTable").innerHTML="";
+    document.getElementById("byPlan").style.display="none";
+    document.getElementById("byName").style.display="none";
+    document.getElementById("byType").style.display="none";
+    document.getElementById(tid).style.display="";
+}
+function query(str,elemId)
+{
+    var xmlhttp;
+    if (str=="") {
+        document.getElementById(elemId).innerHTML="";
+        return;
+    }
+    if (window.XMLHttpRequest)
+        xmlhttp=new XMLHttpRequest();
+    else
+        xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+    xmlhttp.onreadystatechange=function()
+    {
+        if (xmlhttp.readyState==4 && xmlhttp.status==200)
+            document.getElementById(elemId).innerHTML=xmlhttp.responseText;
+    }
+    xmlhttp.open("GET","query.php?"+str,true);
+    xmlhttp.send();
+}
+function spareTime(){
+    document.getElementById('mainTable').innerHTML=("<style>.cc {color: rgb(247, 236, 236);font-weight: bold;padding: 10px;border: dotted 1px black;background: rgb(247, 236, 236);cursor: pointer;transition: background 0.5s, color 0.5s;-webkit-transition: background 0.5s, color 0.5s;}.cc:hover {color: black;background: rgb(175, 231, 110); }</style><thead><tr><th>节</th><th>周一</th><th>周二</th><th>周三</th><th>周四</th><th>周五</th></tr></thead><tr><td>1</td><td rowspan = 2 class = \"cc\" abbr = \"3\" onclick = query('qtype=4&ctype='+document.getElementById(\"courseType\").value+'&filltime='+this.abbr,'mainTable')>选择此处</td><td rowspan = 2 class = \"cc\" abbr = \"24576\" onclick = query('qtype=4&ctype='+document.getElementById(\"courseType\").value+'&filltime='+this.abbr,'mainTable')>选择此处</td><td rowspan = 2 class = \"cc\" abbr = \"201326592\" onclick = query('qtype=4&ctype='+document.getElementById(\"courseType\").value+'&filltime='+this.abbr,'mainTable')>选择此处</td><td rowspan = 2 class = \"cc\" abbr = \"1649267441664\" onclick = query('qtype=4&ctype='+document.getElementById(\"courseType\").value+'&filltime='+this.abbr,'mainTable')>选择此处</td><td rowspan = 2 class = \"cc\" abbr = \"13510798882111488\" onclick = query('qtype=4&ctype='+document.getElementById(\"courseType\").value+'&filltime='+this.abbr,'mainTable')>选择此处</td></tr><tr><td>2</td></tr><tr><td>3</td><td rowspan = 2 class = \"cc\" abbr = \"12\" onclick = query('qtype=4&ctype='+document.getElementById(\"courseType\").value+'&filltime='+this.abbr,'mainTable')>选择此处</td><td rowspan = 2 class = \"cc\" abbr = \"98304\" onclick = query('qtype=4&ctype='+document.getElementById(\"courseType\").value+'&filltime='+this.abbr,'mainTable')>选择此处</td><td rowspan = 2 class = \"cc\" abbr = \"805306368\" onclick = query('qtype=4&ctype='+document.getElementById(\"courseType\").value+'&filltime='+this.abbr,'mainTable')>选择此处</td><td rowspan = 2 class = \"cc\" abbr = \"6597069766656\" onclick = query('qtype=4&ctype='+document.getElementById(\"courseType\").value+'&filltime='+this.abbr,'mainTable')>选择此处</td><td rowspan = 2 class = \"cc\" abbr = \"54043195528445952\" onclick = query('qtype=4&ctype='+document.getElementById(\"courseType\").value+'&filltime='+this.abbr,'mainTable')>选择此处</td></tr><tr><td>4</td></tr><tr><td>5</td><td rowspan = 2 class = \"cc\" abbr = \"48\" onclick = query('qtype=4&ctype='+document.getElementById(\"courseType\").value+'&filltime='+this.abbr,'mainTable')>选择此处</td><td rowspan = 2 class = \"cc\" abbr = \"393216\" onclick = query('qtype=4&ctype='+document.getElementById(\"courseType\").value+'&filltime='+this.abbr,'mainTable')>选择此处</td><td rowspan = 2 class = \"cc\" abbr = \"3221225472\" onclick = query('qtype=4&ctype='+document.getElementById(\"courseType\").value+'&filltime='+this.abbr,'mainTable')>选择此处</td><td rowspan = 2 class = \"cc\" abbr = \"26388279066624\" onclick = query('qtype=4&ctype='+document.getElementById(\"courseType\").value+'&filltime='+this.abbr,'mainTable')>选择此处</td><td rowspan = 2 class = \"cc\" abbr = \"216172782113783808\" onclick = query('qtype=4&ctype='+document.getElementById(\"courseType\").value+'&filltime='+this.abbr,'mainTable')>选择此处</td></tr><tr><td>6</td></tr><tr><td>7</td><td rowspan = 3 class = \"cc\" abbr = \"448\" onclick = query('qtype=4&ctype='+document.getElementById(\"courseType\").value+'&filltime='+this.abbr,'mainTable')>选择此处</td><td rowspan = 3 class = \"cc\" abbr = \"3670016\" onclick = query('qtype=4&ctype='+document.getElementById(\"courseType\").value+'&filltime='+this.abbr,'mainTable')>选择此处</td><td rowspan = 3 class = \"cc\" abbr = \"30064771072\" onclick = query('qtype=4&ctype='+document.getElementById(\"courseType\").value+'&filltime='+this.abbr,'mainTable')>选择此处</td><td rowspan = 3 class = \"cc\" abbr = \"246290604621824\" onclick = query('qtype=4&ctype='+document.getElementById(\"courseType\").value+'&filltime='+this.abbr,'mainTable')>选择此处</td><td rowspan = 3 class = \"cc\" abbr = \"2017612633061982208\" onclick = query('qtype=4&ctype='+document.getElementById(\"courseType\").value+'&filltime='+this.abbr,'mainTable')>选择此处</td></tr><tr><td>8</td></tr><tr><td>9</td></tr><tr><td>10</td><td rowspan = 2 class = \"cc\" abbr = \"1536\" onclick = query('qtype=4&ctype='+document.getElementById(\"courseType\").value+'&filltime='+this.abbr,'mainTable')>选择此处</td><td rowspan = 2 class = \"cc\" abbr = \"12582912\" onclick = query('qtype=4&ctype='+document.getElementById(\"courseType\").value+'&filltime='+this.abbr,'mainTable')>选择此处</td><td rowspan = 2 class = \"cc\" abbr = \"103079215104\" onclick = query('qtype=4&ctype='+document.getElementById(\"courseType\").value+'&filltime='+this.abbr,'mainTable')>选择此处</td><td rowspan = 2 class = \"cc\" abbr = \"844424930131968\" onclick = query('qtype=4&ctype='+document.getElementById(\"courseType\").value+'&filltime='+this.abbr,'mainTable')>选择此处</td><td rowspan = 2 class = \"cc\" abbr = \"6917529027641081856\" onclick = query('qtype=4&ctype='+document.getElementById(\"courseType\").value+'&filltime='+this.abbr,'mainTable')>选择此处</td></tr><tr><td>11</td></tr><tr><td>12</td><td rowspan = 2 class = \"cc\" abbr = \"6144\" onclick = query('qtype=4&ctype='+document.getElementById(\"courseType\").value+'&filltime='+this.abbr,'mainTable')>选择此处</td><td rowspan = 2 class = \"cc\" abbr = \"50331648\" onclick = query('qtype=4&ctype='+document.getElementById(\"courseType\").value+'&filltime='+this.abbr,'mainTable')>选择此处</td><td rowspan = 2 class = \"cc\" abbr = \"412316860416\" onclick = query('qtype=4&ctype='+document.getElementById(\"courseType\").value+'&filltime='+this.abbr,'mainTable')>选择此处</td><td rowspan = 2 class = \"cc\" abbr = \"3377699720527872\" onclick = query('qtype=4&ctype='+document.getElementById(\"courseType\").value+'&filltime='+this.abbr,'mainTable')>选择此处</td><td rowspan = 2 class = \"cc\" abbr = \"-9223372036854775808\" onclick = query('qtype=4&ctype='+document.getElementById(\"courseType\").value+'&filltime='+this.abbr,'mainTable')>选择此处</td></tr><tr><td>13</td></tr>");
+}
+</script>
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<head>
+<link rel="stylesheet" type="text/css" href="tablestyle.css" />
+<title>选课样例</title>
+<style type="text/css">
+	.whole{width:1000px;margin:auto;border:0px solid #000066;background-color:WHITE;overflow:hidden;height:auto}
+	.main{margin-left:10px;width:600px;float:left;}
+	.right{margin-left:40px;width:300px; float:right;}
+</style>
+</head>
+
+<body>
+
+<div class = "whole">
+
+<div class = "main" align = "center">
+		<h3>选课方式</h3>
+		<table><thead><tr>
+			<th align = "center">
+					<input type = "button" onclick="openChoice('byPlan')" value = "通过教学计划">
+			</th><th>OR</th>
+			<th align = "center">
+                    <input type = "button" onclick="openChoice('byName')" value = "通过课程名称">
+			</th><th>OR</th>
+			<th align = "center">
+                    <input type = "button" onclick="openChoice('byType');spareTime()" value = "选择文素，体育等">
+			</tr></thead>
+        </table>
+
+        <table id = "byPlan" style="display: none;">
+            <tr>
+				<td>学年:</td>
+				<td>
+                <select id="gid" onchange="query('qtype=2&gradeId='+this.value,'majorSelect')">
+                    <option value = "n">请选择年级</option>
+                    <option value = "2014a">2014级</option>
+                    <option value = "2015a">2015级</option>
+                    <option value = "2016a">2016级</option>
+                    <option value = "2017a">2017级</option>
+                    <option value = "2018a">2018级</option>
+                </select>
+            </td>
+            <td>专业:</td>
+            <td>
+				<select name = "majorId" id = "majorSelect">
+                    <option value = "n">请先选择年级</option>
+                </select>
+            </td>
+			<td>学期:</td>
+			<td><select name = "semester" id = "sid">
+				<option value = "">不限</option>
+				<option value = "1a">大一上</option>
+				<option value = "1b">大一下</option>
+				<option value = "2a">大二上</option>
+				<option value = "2b">大二下</option>
+				<option value = "3a">大三上</option>
+				<option value = "3b">大三下</option>
+				<option value = "4a">大四上</option>
+				<option value = "4b">大四下</option>
+                </select>
+            </td>
+			<td><input type = "button" value = "确定" onclick="query('qtype=3&gradeId='+document.getElementById('gid').value+'&majorId='+document.getElementById('majorSelect').value+'&semester='+document.getElementById('sid').value,'mainTable')"></td>
+        </table>
+
+        <table id="byName" style="display: none;" >
+            <tr>
+                <td align = "right">课程名称</td>
+                <td align = "center"><input id = "nm" type="text" value = ""></td>
+                <td align = "left"><input type="button" value = "提交" onclick="query('qtype=1&nm='+document.getElementById('nm').value,'mainTable')"></td>
+            </tr>
+        </table>
+        
+        <table id ="byType" style="display: none;" >
+            <tr>
+            <td align = "right">请选择课程类别</td>
+            <td>
+                <select align = "center" id = "courseType">
+                <option value = "1">文化素质类</option>
+                <option value = "2">英语类</option>
+                <option value = "3">计算机类</option>
+                <option value = "4">体育类</option>
+                </select>
+            </td>
+            <td align = "left"><input type = "submit" value = "确认" name = specialCs></td>
+            </tr>
+        </table>
+
+		<table id = "mainTable" class = "bordered"></table>
+</div>
+<div class = "right" align = "center">
+    <h3 >已经选择的课程:</h3>
+    <p>
+        <table id = "already"></table>
+        <h4 id = "ef" style="color: red">选择课程为空！</h4>
+        <input id = "postb" type = button style="display: none;" value = "开始选择班级" onclick = "jsGet()">
+    </p>
+</div>
+
+</div>
+</body>
+</html>
