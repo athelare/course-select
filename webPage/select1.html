@@ -7,12 +7,14 @@ function chooseThis(csId,name){
     for(var r = 0;r<choiceTable.rows.length;++r)if(csId == choiceTable.rows[r].cells[0].innerHTML)return;
     choiceTable.insertRow().innerHTML='<td>'+csId+'</td><td>'+name+'</td><td><input type = button value = "删除" onclick = deleteChoice("'+csId+'")></td>';
 }
+//将找到的所有课程添加到“已经选择的课程里面
 function chooseAll(){
     var info = document.getElementById("mainTable");
     for (var i =1;i<info.rows.length-1;++i) {
         chooseThis(info.rows[i].cells[0].innerHTML,info.rows[i].cells[1].innerHTML);
     }
 }
+//点击“开始选择开课班级”之后执行的函数，把已经选择的课程当做get参数打开选择班级的php界面。
 function jsGet(){
     var param='';
     var info = document.getElementById("already");
@@ -22,6 +24,7 @@ function jsGet(){
     }
     window.open('csclass.php?'+param);
     /*
+    //以下是使用POST方式传递参数
     var frm = document.createElement("form");
     var info = document.getElementById("already");
     frm.action = "csclass.php";
@@ -42,22 +45,28 @@ function jsGet(){
     */
 }
 
+//function:delete all selections
 function deleteChoice(csId){
+    //
     var choiceTable = document.getElementById("already");
     for(var r = 0;r<choiceTable.rows.length;++r)if(csId == choiceTable.rows[r].cells[0].innerHTML){
         choiceTable.deleteRow(r);
         if(choiceTable.rows.length == 0){
+            //ef:existFlag,"选择课程为空"这个标题的id名字
             document.getElementById("ef").style.display="";
+            //postb:开始选择开课班级的按钮，只有有一些课程被选择的情况下才会显示
             document.getElementById("postb").style.display="none";
         }
         return;
     }
 }
+//表格复选框全选功能，将表格中的所有项设置为选择状态。
 function selectAll(a){
     o=document.getElementsByName(a)
     for(i=0;i<o.length;i++)
         o[i].checked=event.srcElement.checked
- }
+}
+//初始化
 function openChoice(tid){
     document.getElementById("mainTable").innerHTML="";
     document.getElementById("byPlan").style.display="none";
@@ -65,6 +74,7 @@ function openChoice(tid){
     document.getElementById("byType").style.display="none";
     document.getElementById(tid).style.display="";
 }
+//查询，使用ajax在页面内不刷新返回内容
 function query(str,elemId)
 {
     var xmlhttp;
@@ -84,6 +94,7 @@ function query(str,elemId)
     xmlhttp.open("GET","query.php?"+str,true);
     xmlhttp.send();
 }
+//选择某一个时间段里面的文化素质，体育课，等等。
 function spareTime(){
     document.getElementById('mainTable').innerHTML=("<style>.cc {color: rgb(247, 236, 236);font-weight: bold;padding: 10px;border: dotted 1px black;background: rgb(247, 236, 236);cursor: pointer;transition: background 0.5s, color 0.5s;-webkit-transition: background 0.5s, color 0.5s;}.cc:hover {color: black;background: rgb(175, 231, 110); }</style><thead><tr><th>节</th><th>周一</th><th>周二</th><th>周三</th><th>周四</th><th>周五</th></tr></thead><tr><td>1</td><td rowspan = 2 class = \"cc\" abbr = \"3\" onclick = query('qtype=4&ctype='+document.getElementById(\"courseType\").value+'&filltime='+this.abbr,'mainTable')>选择此处</td><td rowspan = 2 class = \"cc\" abbr = \"24576\" onclick = query('qtype=4&ctype='+document.getElementById(\"courseType\").value+'&filltime='+this.abbr,'mainTable')>选择此处</td><td rowspan = 2 class = \"cc\" abbr = \"201326592\" onclick = query('qtype=4&ctype='+document.getElementById(\"courseType\").value+'&filltime='+this.abbr,'mainTable')>选择此处</td><td rowspan = 2 class = \"cc\" abbr = \"1649267441664\" onclick = query('qtype=4&ctype='+document.getElementById(\"courseType\").value+'&filltime='+this.abbr,'mainTable')>选择此处</td><td rowspan = 2 class = \"cc\" abbr = \"13510798882111488\" onclick = query('qtype=4&ctype='+document.getElementById(\"courseType\").value+'&filltime='+this.abbr,'mainTable')>选择此处</td></tr><tr><td>2</td></tr><tr><td>3</td><td rowspan = 2 class = \"cc\" abbr = \"12\" onclick = query('qtype=4&ctype='+document.getElementById(\"courseType\").value+'&filltime='+this.abbr,'mainTable')>选择此处</td><td rowspan = 2 class = \"cc\" abbr = \"98304\" onclick = query('qtype=4&ctype='+document.getElementById(\"courseType\").value+'&filltime='+this.abbr,'mainTable')>选择此处</td><td rowspan = 2 class = \"cc\" abbr = \"805306368\" onclick = query('qtype=4&ctype='+document.getElementById(\"courseType\").value+'&filltime='+this.abbr,'mainTable')>选择此处</td><td rowspan = 2 class = \"cc\" abbr = \"6597069766656\" onclick = query('qtype=4&ctype='+document.getElementById(\"courseType\").value+'&filltime='+this.abbr,'mainTable')>选择此处</td><td rowspan = 2 class = \"cc\" abbr = \"54043195528445952\" onclick = query('qtype=4&ctype='+document.getElementById(\"courseType\").value+'&filltime='+this.abbr,'mainTable')>选择此处</td></tr><tr><td>4</td></tr><tr><td>5</td><td rowspan = 2 class = \"cc\" abbr = \"48\" onclick = query('qtype=4&ctype='+document.getElementById(\"courseType\").value+'&filltime='+this.abbr,'mainTable')>选择此处</td><td rowspan = 2 class = \"cc\" abbr = \"393216\" onclick = query('qtype=4&ctype='+document.getElementById(\"courseType\").value+'&filltime='+this.abbr,'mainTable')>选择此处</td><td rowspan = 2 class = \"cc\" abbr = \"3221225472\" onclick = query('qtype=4&ctype='+document.getElementById(\"courseType\").value+'&filltime='+this.abbr,'mainTable')>选择此处</td><td rowspan = 2 class = \"cc\" abbr = \"26388279066624\" onclick = query('qtype=4&ctype='+document.getElementById(\"courseType\").value+'&filltime='+this.abbr,'mainTable')>选择此处</td><td rowspan = 2 class = \"cc\" abbr = \"216172782113783808\" onclick = query('qtype=4&ctype='+document.getElementById(\"courseType\").value+'&filltime='+this.abbr,'mainTable')>选择此处</td></tr><tr><td>6</td></tr><tr><td>7</td><td rowspan = 3 class = \"cc\" abbr = \"448\" onclick = query('qtype=4&ctype='+document.getElementById(\"courseType\").value+'&filltime='+this.abbr,'mainTable')>选择此处</td><td rowspan = 3 class = \"cc\" abbr = \"3670016\" onclick = query('qtype=4&ctype='+document.getElementById(\"courseType\").value+'&filltime='+this.abbr,'mainTable')>选择此处</td><td rowspan = 3 class = \"cc\" abbr = \"30064771072\" onclick = query('qtype=4&ctype='+document.getElementById(\"courseType\").value+'&filltime='+this.abbr,'mainTable')>选择此处</td><td rowspan = 3 class = \"cc\" abbr = \"246290604621824\" onclick = query('qtype=4&ctype='+document.getElementById(\"courseType\").value+'&filltime='+this.abbr,'mainTable')>选择此处</td><td rowspan = 3 class = \"cc\" abbr = \"2017612633061982208\" onclick = query('qtype=4&ctype='+document.getElementById(\"courseType\").value+'&filltime='+this.abbr,'mainTable')>选择此处</td></tr><tr><td>8</td></tr><tr><td>9</td></tr><tr><td>10</td><td rowspan = 2 class = \"cc\" abbr = \"1536\" onclick = query('qtype=4&ctype='+document.getElementById(\"courseType\").value+'&filltime='+this.abbr,'mainTable')>选择此处</td><td rowspan = 2 class = \"cc\" abbr = \"12582912\" onclick = query('qtype=4&ctype='+document.getElementById(\"courseType\").value+'&filltime='+this.abbr,'mainTable')>选择此处</td><td rowspan = 2 class = \"cc\" abbr = \"103079215104\" onclick = query('qtype=4&ctype='+document.getElementById(\"courseType\").value+'&filltime='+this.abbr,'mainTable')>选择此处</td><td rowspan = 2 class = \"cc\" abbr = \"844424930131968\" onclick = query('qtype=4&ctype='+document.getElementById(\"courseType\").value+'&filltime='+this.abbr,'mainTable')>选择此处</td><td rowspan = 2 class = \"cc\" abbr = \"6917529027641081856\" onclick = query('qtype=4&ctype='+document.getElementById(\"courseType\").value+'&filltime='+this.abbr,'mainTable')>选择此处</td></tr><tr><td>11</td></tr><tr><td>12</td><td rowspan = 2 class = \"cc\" abbr = \"6144\" onclick = query('qtype=4&ctype='+document.getElementById(\"courseType\").value+'&filltime='+this.abbr,'mainTable')>选择此处</td><td rowspan = 2 class = \"cc\" abbr = \"50331648\" onclick = query('qtype=4&ctype='+document.getElementById(\"courseType\").value+'&filltime='+this.abbr,'mainTable')>选择此处</td><td rowspan = 2 class = \"cc\" abbr = \"412316860416\" onclick = query('qtype=4&ctype='+document.getElementById(\"courseType\").value+'&filltime='+this.abbr,'mainTable')>选择此处</td><td rowspan = 2 class = \"cc\" abbr = \"3377699720527872\" onclick = query('qtype=4&ctype='+document.getElementById(\"courseType\").value+'&filltime='+this.abbr,'mainTable')>选择此处</td><td rowspan = 2 class = \"cc\" abbr = \"-9223372036854775808\" onclick = query('qtype=4&ctype='+document.getElementById(\"courseType\").value+'&filltime='+this.abbr,'mainTable')>选择此处</td></tr><tr><td>13</td></tr>");
 }

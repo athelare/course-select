@@ -17,6 +17,7 @@
     <title>选课结果</title>
 </head>
 <?php
+//统计学分冲突数（通过计算二进制表示中有多少1相同）
 function count1($a){
     $n=0;
     while($a!=0){
@@ -25,6 +26,8 @@ function count1($a){
     }
     return $n;
 }
+
+//接下来：递归搜索选课方案，存放在全局变量LessonSet中
 $planRecord = [];
 $planCount=0;
 $Max_Conflict = (int)(2*(float)$_POST['MaxConflict']);
@@ -35,6 +38,7 @@ function searchLesson($curIndex,$sumHalfA,$sumHalfB,$conflictNum){
     if($planCount >=100)return;
     if($conflictNum > $Max_Conflict)return;
     if($curIndex == $N){
+        //到达这一步就说明找到了一个新的选课方案
         array_push($planRecord,[]);
         foreach($selectedLessons as $sels)array_push($planRecord[$planCount],$sels);
         $planCount++;
@@ -55,6 +59,7 @@ function searchLesson($curIndex,$sumHalfA,$sumHalfB,$conflictNum){
         array_pop($selectedLessons);
     }
 }
+//函数功能：打印课程表
 function printLessonTable($lessonSet){
     global $halfA,$halfB,$db;
     $lessonTimeId=[];
@@ -133,6 +138,7 @@ function printLessonTable($lessonSet){
     echo'</table>';
 }
 /*-----------------------------------------------------------------*/
+//以下：获取halfA,halfB的值
 foreach($_SESSION["selectedCS"]as $courseId){
     foreach($_POST[$courseId]as $lessonId){
         $result = $db->query("SELECT halfA,halfB from Lesson where lessonId = ".$lessonId);

@@ -149,37 +149,27 @@
 					</select></td>
 					<td><input type = "submit" value = "确认" name = specialCs></td>
 					</tr></table>';
-				echo'<h4>请勾选空出来的课程</h4><table class="zebra">
-					<thead>
-						<tr>
-							<th>节</th>
-							<th>周一</th>
-							<th>周二</th>
-							<th>周三</th>
-							<th>周四</th>
-							<th>周五</th>
-						</tr>
-					</thead>';
+				echo'<h4>请勾选空出来的课程</h4><table class="zebra">';
+				echo'
+<style>.cc {color: rgb(247, 236, 236);font-weight: bold;padding: 10px;border: dotted 1px black;background: rgb(247, 236, 236);cursor: pointer;transition: background 0.5s, color 0.5s;-webkit-transition: background 0.5s, color 0.5s;}.cc:hover {color: black;background: rgb(175, 231, 110); }</style><thead><tr><th>节</th><th>周一</th><th>周二</th><th>周三</th><th>周四</th><th>周五</th></tr></thead>';
 					for($ithlesson = 0;$ithlesson<13;++$ithlesson){
 						echo'<tr><td>'.($ithlesson+1).'</td>';
 
 						if($ithlesson == 0 || $ithlesson == 2||$ithlesson == 4||$ithlesson == 9||$ithlesson == 11)
 						for($ithweekday = 0;$ithweekday <5;++$ithweekday){
-							echo'<td rowspan = 2>
-							<input type = checkbox name = "timeAvail[]" value = "'.
+							echo'<td rowspan = 2 class = "cc" abbr = "'.
 							((1<<($ithlesson+13*$ithweekday))|(1<<($ithlesson+1+13*$ithweekday))).
-							'"></td>';
+							'" onclick = query(\'qtype=4&ctype=\'+document.getElementById("courseType").value+\'&filltime=\'+this.abbr,\'mainTable\')>选择此处</td>';
 						}else if($ithlesson == 6)
 						for($ithweekday = 0;$ithweekday <5;++$ithweekday){
-							echo'<td rowspan = 3>
-							<input type = "checkbox" name = "timeAvail[]" value = "'.
+							echo'<td rowspan = 3 class = "cc" abbr = "'.
 							((1<<($ithlesson+13*$ithweekday))|(1<<($ithlesson+1+13*$ithweekday))|(1<<($ithlesson+2+13*$ithweekday))).
-							'"></td>';
+							'" onclick = query(\'qtype=4&ctype=\'+document.getElementById("courseType").value+\'&filltime=\'+this.abbr,\'mainTable\')>选择此处</td>';
 						}
-
 						echo'</tr>';
 					}
-				echo'</table></form>';
+				echo'
+				</table></form>';
 			}else{
 				$fillTime = 0;
 				$count = 0;
@@ -246,7 +236,7 @@
 				echo '<tr><td>'.htmlentities($choice).':'.
 				$name ->fetch_assoc()['name'].
 				'<form action = "" method = "post" name = "delete">'.
-				'<input type = "hidden" name = "dt" value = ""'.htmlentities($choice).'>'.
+				'<input type = "hidden" name = "dt" value = "'.htmlentities($choice).'">'.
 				'<input type = "hidden" name = "dtf" value = "1">'.
 				'<td><input type = "submit" value = "删除">'.
 				'</form></td></tr>';
