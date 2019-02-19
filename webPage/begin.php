@@ -8,6 +8,59 @@
 
 	$db->query("set names 'utf8'");
 ?>
+
+<script language = "javascript">
+
+
+document.onkeydown=function(e){
+    console.log(e.keyCode)
+    e=e||window.event;  
+	e.preventDefault();
+	switch(e.keyCode){  
+		case 37: 
+            RollShow(-1);
+			break; 
+		case 39:
+            RollShow(1);
+			break;
+	}
+}
+//查询，使用ajax在页面内不刷新返回内容
+function query(str,elemId)
+{
+    var xmlhttp;
+    if (str=="") {
+        document.getElementById(elemId).innerHTML="";
+        return;
+    }
+    if (window.XMLHttpRequest)
+        xmlhttp=new XMLHttpRequest();
+    else
+        xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+    xmlhttp.onreadystatechange=function()
+    {
+        if (xmlhttp.readyState==4 && xmlhttp.status==200)
+            document.getElementById(elemId).innerHTML=xmlhttp.responseText;
+    }
+    xmlhttp.open("GET","query.php?"+str,true);
+    xmlhttp.send();
+}
+//功能：在给出选课方案的情况下找到还可以选其他的什么课（文素，体育，英语，等等）
+function findPeCulEng(halfA,halfB){
+    //TO DO
+}
+var Display = 1;
+function RollShow(direction){
+    var planCount = parseInt(document.getElementById("totalPlans").abbr);
+    document.getElementById("Plan"+Display).style.display="none";
+    if(Display+direction >=1 && Display+direction <=planCount){
+        Display+=direction;
+    }
+    document.getElementById("currentShow").innerHTML=Display+"";
+    document.getElementById("Plan"+Display).style.display="";
+}
+</script>
+
 <!--
     $_SESSION['selectedCS']:array of courseId;
     $_POST['courseId']:array of classes.
@@ -29,6 +82,8 @@ function count1($a){
 
 //接下来：递归搜索选课方案，存放在全局变量LessonSet中
 $planRecord = [];
+$planHalfA=[];//方案筛选完毕以后的上半学期和下半学期的时刻信息
+$planHalfB=[];
 $planCount=0;
 $Max_Conflict = (int)(2*(float)$_POST['MaxConflict']);
 $N = sizeof($_SESSION['selectedCS']);
@@ -77,19 +132,15 @@ function printLessonTable($lessonSet){
         array_push($used,[]);
         for($j=0;$j<=13;++$j)array_push($lessonTable[$i],0);
     }
-    /*---------------------------------------------*/
+    /*-----------以下将课程全部填入表格，只要时间段里有那个课程就填进去----------------*/
     foreach($lessonSet as $ls){
         $lessonTimeId[$ls]=0;
         for($i=0;$i<64;++$i){
             if(((1<<$i) & $halfA[$ls]) != 0 || (((1<<$i) & $halfB[$ls])!=0)){
-                $j = $i;
-                for(;((1<<$j) & $halfA[$ls]) != 0|| ((1<<$j) & $halfB[$ls]) != 0;++$j);
                 array_push(
                     $lessonTable[$i/13][$i%13+1]['ls'],
                     $ls
                 );
-                $lessonTable[$i/13][$i%13+1]['mxrow'] = max($lessonTable[$i/13][$i%13+1]['mxrow'],$j-$i);
-                $i=$j;
             }
         }
     }
@@ -102,8 +153,33 @@ function printLessonTable($lessonSet){
     <td>星期四</td>
     <td>星期五</td>
     </tr>';
+
+    //对非空白的时间段进行划分
     for($j=0;$j<5;++$j){
         for($i=1;$i<=13;++$i){
+            $lessonCount = sizeof($lessonTable[$j][$i]['ls']);
+            if($lessonCount==0)continue;
+            //变量意义：同一时间段里课程数量
+            //接下来制作课程表，如果一个时间段与其后连续的时间段课程完全相同，就合并在一起
+            for($maxRow=0,$flag = TRUE;
+                $lessonCount == sizeof($lessonTable[$j][$i+$maxRow]['ls']) && $i+$maxRow<=13;
+                ++$maxRow){
+                    foreach($lessonTable[$j][$i]['ls'] as $lessonInFirst)
+                        if(!in_array($lessonInFirst,$lessonTable[$j][$i+$maxRow]['ls'])){
+                            $flag = FALSE;
+                            break;
+                        }
+                if($flag == FALSE)break;
+            }
+            $lessonTable[$j][$i]['mxrow']=$maxRow;
+            $i += $maxRow-1;
+        }
+    }
+
+    //对空白时间段的时间进行划分
+    for($j=0;$j<5;++$j){
+        for($i=1;$i<=13;++$i){
+            
             if($lessonTable[$j][$i]['ls'] == []){
                 $lessonTable[$j][$i]['mxrow']=1;
                 $cu=$i;
@@ -156,14 +232,20 @@ while(true){
     }else break;
 }
 echo "<h3 align = center>总共方案数：".$planCount.'。冲突学分： '.($Max_Conflict/2).'</h3>';
+echo "<table align = center><tr><td><input type='button' value = '上一个' onClick=RollShow(-1)></td><td>
+<table><tr><td id = currentShow>1</td><td id = totalPlans abbr = ".$planCount.">/".$planCount."</td></tr></table>
+</td><td><input type=button value = '下一个' onClick=RollShow(1)></td></tr></table>";
 
-
+$count=1;
 foreach($planRecord as $pl){
-    echo'<p><table><tr><td>';
+    if($count == 1)echo'<div id="Plan'.$count++.'"><table><tr><td>';
+    else echo'<div style="display:none" id="Plan'.$count++.'"><table><tr><td>';
     printLessonTable($pl);
-    echo'</td></tr></table></p>';
+    echo'</td></tr></table></div>';
 }
 
 
 ?>
+
+<div id="continuePlan"style="display:none"></div>
 </html>

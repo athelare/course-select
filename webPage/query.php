@@ -78,30 +78,60 @@
 		$count = 0;
         $fillTime = ~((int)$_GET['filltime']);
         $result0 = $db->query('SELECT courseId from SpecialCourses WHERE courseType = \''.$_GET['ctype'].'\'');
-			echo'<thead><tr><th>课程号</th><th>课程名称</th><th>学分</th><th>开课学院</th><th>
-			<input type = "button" name = "cs" value = "全选" onclick = "chooseAll()">
-			</th></tr></thead>';
-			while($row0 =$result0 -> fetch_assoc()){
-				$flag = 0;
-				$result = $db->query('SELECT halfA,halfB from Lesson WHERE courseId =\''.$row0['courseId'].'\'');
-				while($row = $result->fetch_assoc()){
-					if(($fillTime & ($row['halfA']|$row['halfB']))==0){
-						$flag = 1;//有一个可以的时间，相与的结果就为零，说明这一个课程可以选择
-						break;
-					}
+		echo'<thead><tr><th>课程号</th><th>课程名称</th><th>学分</th><th>开课学院</th><th>
+		<input type = "button" name = "cs" value = "全选" onclick = "chooseAll()">
+		</th></tr></thead>';
+		while($row0 =$result0 -> fetch_assoc()){
+			$flag = 0;
+			$result = $db->query('SELECT halfA,halfB from Lesson WHERE courseId =\''.$row0['courseId'].'\'');
+			while($row = $result->fetch_assoc()){
+				if(($fillTime & ($row['halfA']|$row['halfB']))==0){
+					$flag = 1;//有一个可以的时间，相与的结果就为零，说明这一个课程可以选择
+					break;
 				}
-				if($flag == 0)continue;
-				$count++;
-				$result = $db->query('SELECT name,credit,faculty FROM Course WHERE courseId = \''.$row0['courseId'].'\'');
-				$row = $result->fetch_assoc();
-				echo'<tr>
-                    <td>'.$row0['courseId'].'</td>
-                    <td>'.$row['name'].'</td>
-                    <td>'.$row['credit'].'</td>
-                    <td>'.$row['faculty'].'</td>
-                    <td><input type = "button" name = "cs" value = "选择" onclick = "chooseThis(\''.$row0['courseId'].'\',\''.$row['name'].'\')"></td>
-                </tr>';
 			}
-			echo '<tfoot><tr><td colspan = 4>所选时间段内共有'.$count.'门课。选课愉快！</td><td><input type = button value = "返回" onclick = "openChoice(\'byType\');spareTime()"></td></tr></tfoot>';
+			if($flag == 0)continue;
+			$count++;
+			$result = $db->query('SELECT name,credit,faculty FROM Course WHERE courseId = \''.$row0['courseId'].'\'');
+			$row = $result->fetch_assoc();
+			echo'<tr>
+                <td>'.$row0['courseId'].'</td>
+     		    <td>'.$row['name'].'</td>
+                <td>'.$row['credit'].'</td>
+                <td>'.$row['faculty'].'</td>
+                <td><input type = "button" name = "cs" value = "选择" onclick = "chooseThis(\''.$row0['courseId'].'\',\''.$row['name'].'\')"></td>
+            	</tr>';
+		}
+		echo '<tfoot><tr><td colspan = 4>所选时间段内共有'.$count.'门课。选课愉快！</td><td><input type = button value = "返回" onclick = "openChoice(\'byType\');spareTime()"></td></tr></tfoot>';
+	}
+	//在给出选课时段二进制表示情况下查找所有的文素、体育、计算机、英语选课方案
+	else if($_GET['qtype']=="5"){
+		$count = 0;
+		$halfA = (int)$_GET['halfA'];
+		$halfB = (int)$_GET['halfB'];
+		echo'<thead><tr><th>课程号</th><th>课程名称</th><th>学分</th><th>开课学院</th><th>选择</th></tr></thead>';
+		$result0 = $db->query('SELECT courseId from SpecialCourses');
+		while($row0 =$result0 -> fetch_assoc()){
+			$flag = 0;
+			$result = $db->query('SELECT halfA,halfB from Lesson WHERE courseId =\''.$row0['courseId'].'\'');
+			while($row = $result->fetch_assoc()){
+				if(($halfA & $row['halfA']==0)&&($halfB & $row['halfB']==0)){
+					$flag = 1;//有一个可以的时间，相与的结果就为零，说明这一个课程可以选择
+					break;
+				}
+			}
+			if($flag == 0)continue;
+			$count++;
+			$result = $db->query('SELECT name,credit,faculty FROM Course WHERE courseId = \''.$row0['courseId'].'\'');
+			$row = $result->fetch_assoc();
+			echo'<tr>
+                <td>'.$row0['courseId'].'</td>
+     		    <td>'.$row['name'].'</td>
+                <td>'.$row['credit'].'</td>
+                <td>'.$row['faculty'].'</td>
+                <td><input type = "button" name = "cs" value = "选择" onclick = "AddThis(\''.$row0['courseId'].'\',\''.$row['name'].'\')"></td>
+            	</tr>';
+		}
+		echo '<tfoot><tr><td colspan = 5>*注:以上仅显示本学期开设的课程，如果课程重名请参考本专业教学计划。选课愉快！</td></tr></tfoot>';
 	}
 ?>
