@@ -115,7 +115,7 @@
 			$flag = 0;
 			$result = $db->query('SELECT halfA,halfB from Lesson WHERE courseId =\''.$row0['courseId'].'\'');
 			while($row = $result->fetch_assoc()){
-				if(($halfA & $row['halfA']==0)&&($halfB & $row['halfB']==0)){
+				if(($halfA & $row['halfA'])==0&&($halfB & $row['halfB'])==0){
 					$flag = 1;//有一个可以的时间，相与的结果就为零，说明这一个课程可以选择
 					break;
 				}
@@ -128,8 +128,8 @@
                 <td>'.$row0['courseId'].'</td>
      		    <td>'.$row['name'].'</td>
                 <td>'.$row['credit'].'</td>
-                <td>'.$row['faculty'].'</td>
-                <td><input type = "button" name = "cs" value = "选择" onclick = "AddThis(\''.$row0['courseId'].'\',\''.$row['name'].'\')"></td>
+				<td>'.$row['faculty'].'</td>
+				<td><a href = "http://jwdep.dhu.edu.cn/dhu/student/selectcourse/teachclasslist.jsp?courseId='.$row0['courseId'].'&courseName='.urlencode(iconv("UTF-8", "gb2312", $row['name'])).'" target = "view_window">选择</a></td>
             	</tr>';
 		}
 		echo '<tfoot><tr><td colspan = 5>*注:以上仅显示本学期开设的课程，如果课程重名请参考本专业教学计划。选课愉快！</td></tr></tfoot>';

@@ -6,7 +6,8 @@
 		die("连接失败：".$db->connect_error);
 	}
 
-	$db->query("set names 'utf8'");
+    $db->query("set names 'utf8'");
+    
 ?>
 
 <script language = "javascript">
@@ -17,7 +18,7 @@ document.onkeydown=function(e){
     e=e||window.event;  
 	e.preventDefault();
 	switch(e.keyCode){  
-		case 37: 
+		case 37:
             RollShow(-1);
 			break; 
 		case 39:
@@ -26,8 +27,11 @@ document.onkeydown=function(e){
 	}
 }
 //查询，使用ajax在页面内不刷新返回内容
-function query(str,elemId)
+function query()
 {
+    elemId = "continuePlan";
+    str = "qtype=5&"+document.getElementById("Plan"+Display).title;
+    document.getElementById(elemId).style.display="";
     var xmlhttp;
     if (str=="") {
         document.getElementById(elemId).innerHTML="";
@@ -45,10 +49,7 @@ function query(str,elemId)
     xmlhttp.open("GET","query.php?"+str,true);
     xmlhttp.send();
 }
-//功能：在给出选课方案的情况下找到还可以选其他的什么课（文素，体育，英语，等等）
-function findPeCulEng(halfA,halfB){
-    //TO DO
-}
+
 var Display = 1;
 function RollShow(direction){
     var planCount = parseInt(document.getElementById("totalPlans").abbr);
@@ -89,14 +90,18 @@ $Max_Conflict = (int)(2*(float)$_POST['MaxConflict']);
 $N = sizeof($_SESSION['selectedCS']);
 $selectedLessons = [];
 function searchLesson($curIndex,$sumHalfA,$sumHalfB,$conflictNum){
-    global $halfA,$halfB,$N,$selectedLessons,$planCount,$planRecord,$Max_Conflict;
+    global $planHalfA,$planHalfB,$halfA,$halfB,$N,$selectedLessons,$planCount,$planRecord,$Max_Conflict;
     if($planCount >=100)return;
     if($conflictNum > $Max_Conflict)return;
     if($curIndex == $N){
         //到达这一步就说明找到了一个新的选课方案
-        array_push($planRecord,[]);
-        foreach($selectedLessons as $sels)array_push($planRecord[$planCount],$sels);
+        $planRecord[]=[];
+        foreach($selectedLessons as $sels)$planRecord[$planCount][]=$sels;
         $planCount++;
+        //记录方案所占的时刻信息
+        $planHalfA[$planCount]=$sumHalfA;
+        $planHalfB[$planCount]=$sumHalfB;
+        //echo $planCount.'<br />'.$planHalfA[$planCount].'<br />';
         if($planCount >= 100){
             echo '可行的选课方案大于等于100，几乎可以随便选课.<br />';
         }
@@ -104,7 +109,7 @@ function searchLesson($curIndex,$sumHalfA,$sumHalfB,$conflictNum){
     }
     for($i=0;$i<sizeof($_POST[$_SESSION['selectedCS'][$curIndex]]);++$i){
         $lsId = $_POST[$_SESSION['selectedCS'][$curIndex]][$i];
-        array_push($selectedLessons,$lsId);
+        $selectedLessons[]=$lsId;
         searchLesson(
             $curIndex +1 ,
             $halfA[$lsId] | $sumHalfA,
@@ -119,33 +124,26 @@ function printLessonTable($lessonSet){
     global $halfA,$halfB,$db;
     $lessonTimeId=[];
     $lessonTable = [];
-    $used = [];
     /*-------------Init data--------------------*/
     for($i=0;$i<5;++$i){
-        array_push($lessonTable,[]);
+        $lessonTable[]=[];
         for($j=0;$j<=13;++$j){
-            array_push($lessonTable[$i],[]);
+            $lessonTable[$i][]=[];
             $lessonTable[$i][$j]['ls']=[];
         }
     }
-    for($i=0;$i<5;++$i){
-        array_push($used,[]);
-        for($j=0;$j<=13;++$j)array_push($lessonTable[$i],0);
-    }
+
     /*-----------以下将课程全部填入表格，只要时间段里有那个课程就填进去----------------*/
     foreach($lessonSet as $ls){
         $lessonTimeId[$ls]=0;
         for($i=0;$i<64;++$i){
             if(((1<<$i) & $halfA[$ls]) != 0 || (((1<<$i) & $halfB[$ls])!=0)){
-                array_push(
-                    $lessonTable[$i/13][$i%13+1]['ls'],
-                    $ls
-                );
+                $lessonTable[$i/13][$i%13+1]['ls'][]=$ls;
             }
         }
     }
     echo'
-    <table align = center border = 1><tr>
+    <table align = center border = "1px"cellspacing="0"><tr>
     <td>节</td>
     <td>星期一</td>
     <td>星期二</td>
@@ -214,6 +212,25 @@ function printLessonTable($lessonSet){
     echo'</table>';
 }
 /*-----------------------------------------------------------------*/
+function PrintLessonLink($lessonSet){
+    global $db;
+    echo'<h3>选课链接：</h3>';
+    echo'<table>';
+    foreach($lessonSet as $lesson){
+        $result = $db->query("SELECT courseId FROM Lesson WHERE lessonId = ".$lesson);
+        $row = $result->fetch_assoc();
+        $csId = $row['courseId'];
+        $result = $db->query("SELECT name from Course WHERE courseId = ".$csId);
+        $name = $result->fetch_assoc()['name'];
+        
+        echo '<tr><td>
+        <a href=
+        "http://jwdep.dhu.edu.cn/dhu/student/selectcourse/selectcourse2.jsp?courseNo='.$lesson.'&courseId='.$csId.'&courseName='.urlencode(iconv("UTF-8", "gb2312", $name)).'"
+        target="view_window" >'.$name.'</a>
+        </td></tr>';
+    }
+    echo'</table>';
+}
 //以下：获取halfA,halfB的值
 foreach($_SESSION["selectedCS"]as $courseId){
     foreach($_POST[$courseId]as $lessonId){
@@ -237,15 +254,26 @@ echo "<table align = center><tr><td><input type='button' value = '上一个' onC
 </td><td><input type=button value = '下一个' onClick=RollShow(1)></td></tr></table>";
 
 $count=1;
+
 foreach($planRecord as $pl){
-    if($count == 1)echo'<div id="Plan'.$count++.'"><table><tr><td>';
-    else echo'<div style="display:none" id="Plan'.$count++.'"><table><tr><td>';
+    if($count == 1)echo'<div ';
+    else echo'<div style="display:none"';
+    echo 'align = center id="Plan'.$count.'" title = "halfA='.$planHalfA[$count].'&halfB='.$planHalfA[$count].'">';
+    $count++;
+    
+    echo'<table><tr><td><div>';
     printLessonTable($pl);
-    echo'</td></tr></table></div>';
+    echo'</div></td>';
+
+    echo'<td style="vertical-align:top;width:200px"><div>';
+    PrintLessonLink($pl);
+    echo'</div></td></tr></table>';
+    
+    echo'</div>';
 }
 
-
+echo '<div align = center><input type = button onClick = "query()"value="继续查找文素、体育、计算机、英语课的选课方案"></div>'
 ?>
 
-<div id="continuePlan"style="display:none"></div>
+<table id="continuePlan"style="display:none"align="center" border = "1px"cellspacing="0"></table>
 </html>
