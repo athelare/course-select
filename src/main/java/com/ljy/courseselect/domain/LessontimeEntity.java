@@ -36,7 +36,7 @@ public class LessontimeEntity {
     }
 
     @Basic
-    @Column(name = "time", nullable = true, length = 30)
+    @Column(name = "time", length = 30)
     public String getTime() {
         return time;
     }
@@ -46,7 +46,7 @@ public class LessontimeEntity {
     }
 
     @Basic
-    @Column(name = "place", nullable = true, length = 12)
+    @Column(name = "place", length = 12)
     public String getPlace() {
         return place;
     }
@@ -56,7 +56,7 @@ public class LessontimeEntity {
     }
 
     @Basic
-    @Column(name = "week", nullable = true, length = 12)
+    @Column(name = "week", length = 12)
     public String getWeek() {
         return week;
     }
@@ -66,7 +66,7 @@ public class LessontimeEntity {
     }
 
     @Basic
-    @Column(name = "week1", nullable = true)
+    @Column(name = "week1")
     public Long getWeek1() {
         return week1;
     }
@@ -76,7 +76,7 @@ public class LessontimeEntity {
     }
 
     @Basic
-    @Column(name = "week2", nullable = true)
+    @Column(name = "week2")
     public Long getWeek2() {
         return week2;
     }

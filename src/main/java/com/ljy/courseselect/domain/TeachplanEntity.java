@@ -35,7 +35,7 @@ public class TeachplanEntity {
     }
 
     @Basic
-    @Column(name = "majorName", nullable = true, length = 20)
+    @Column(name = "majorName", length = 20)
     public String getMajorName() {
         return majorName;
     }
@@ -65,7 +65,7 @@ public class TeachplanEntity {
     }
 
     @Basic
-    @Column(name = "courseType", nullable = true, length = 10)
+    @Column(name = "courseType", length = 10)
     public String getCourseType() {
         return courseType;
     }

@@ -8,5 +8,5 @@ import java.util.List;
 
 @Repository
 public interface TeachPlanDao extends JpaRepository<TeachplanEntity,Long> {
-    List<TeachplanEntity> findAllByGradeIdAndMajorId(String gradeId, String majorId);
+    List<TeachplanEntity> findAllByGradeIdAndMajorIdAndSemesterIdLike(String gradeId,String majorId,String semester);
 }

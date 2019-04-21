@@ -35,7 +35,7 @@ public class LessonEntity {
     }
 
     @Basic
-    @Column(name = "recommend", nullable = true, length = 20)
+    @Column(name = "recommend", length = 20)
     public String getRecommend() {
         return recommend;
     }
@@ -45,7 +45,7 @@ public class LessonEntity {
     }
 
     @Basic
-    @Column(name = "halfA", nullable = true)
+    @Column(name = "halfA")
     public Long getHalfA() {
         return halfA;
     }
@@ -55,7 +55,7 @@ public class LessonEntity {
     }
 
     @Basic
-    @Column(name = "halfB", nullable = true)
+    @Column(name = "halfB")
     public Long getHalfB() {
         return halfB;
     }
@@ -65,7 +65,7 @@ public class LessonEntity {
     }
 
     @Basic
-    @Column(name = "teacher", nullable = true, length = 15)
+    @Column(name = "teacher", length = 15)
     public String getTeacher() {
         return teacher;
     }

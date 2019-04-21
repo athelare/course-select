@@ -12,19 +12,113 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
     <script type="text/javascript">
         function getMajorList(gradeId){
-            var majors=$("#majorList")
+            var majors=$("#majorList");
+            majors.empty();
+
             if(gradeId===""){
                 majors.append('<option value="">请先选择年级</option>');
                 majors.attr("disabled","disabled");
             }else{
                 majors.removeAttr('disabled');
-                majors.empty();
                 $.getJSON("majors/"+gradeId,function (result) {
                     for(var i in result){
                         if(result[i].hasOwnProperty('majorId') && result[i].hasOwnProperty('majorName')) {
                             majors.append('<option value=' + result[i]['majorId'] + '>' + result[i]['majorName']  + '</option>');
                         }
                     }
+                })
+            }
+        }
+        function deleteOneCourse(courseId){
+            var chosenCourseTable = document.getElementById("chosenCourses");
+            for(var r = 0;r<chosenCourseTable.rows.length;++r)
+                if(courseId == chosenCourseTable.rows[r].cells[0].innerHTML){
+                chosenCourseTable.deleteRow(r);
+                if(chosenCourseTable.rows.length === 0){
+                    document.getElementById("next").setAttribute("disabled","disabled");
+                }
+                return;
+            }
+        }
+        function addOneCourse(courseId,courseName) {
+            var chosenCourseTable = document.getElementById('chosenCourses');
+            document.getElementById("next").removeAttribute("disabled");
+            for(var r = 0;r<chosenCourseTable.rows.length;++r)
+                if(courseId === chosenCourseTable.rows[r].cells[0].innerHTML)return;
+            var newRow = chosenCourseTable.insertRow();
+            newRow.innerHTML='<td>'+courseId+'</td><td>'+courseName+'</td><td><input type = button class="btn btn-danger btn-xs" value = "删除" onclick = deleteOneCourse("'+courseId+'")></td>';
+            newRow.setAttribute('class','success');
+        }
+        function getCoursesByName(name){
+            var inputName = $('#courseNameDiv');
+            if(name.length === 0){
+                inputName.addClass("has-error");
+                $('#inputCourseName').attr("placeholder","课程名称不能为空");
+            }else{
+                inputName.removeClass("has-error");
+                inputName.addClass("has-success");
+                var tableBody=$("#courseListForChoose");
+                tableBody.empty();
+                $.getJSON("courses/name="+name,function (result) {
+                    if(result.length === 0){
+                        tableBody.append(
+                            "                <tr class='text-center'>\n" +
+                            "                    <td colspan='5'>\n" +
+                            "                        <div class='alert alert-warning'>\n" +
+                            "                            未检索到名字包含'"+name+"'的课程。\n" +
+                            "                        </div>\n" +
+                            "                    </td>\n" +
+                            "                </tr>\n");
+                    }
+                    else
+                    for(var i in result){
+                        tableBody.append("<tr class='info'>"+
+                            "<td>"+result[i]['courseId']+"</td>"+
+                            "<td>"+result[i]['name']+"</td>"+
+                            "<td>"+result[i]['credit']+"</td>"+
+                            "<td>"+result[i]['faculty']+"</td>"+
+                            "<td><input type='button' class='btn btn-success btn-xs' onclick='addOneCourse(\""+result[i]['courseId']+"\",\""+result[i]['name']+"\")' value='点击选择'/></td>"+
+                            "</tr>"
+                        )
+                    }
+                })
+            }
+        }
+        function getCoursesByPlan(grade,major,semester){
+            var tableBody=$("#courseListForChoose");
+            tableBody.empty();
+            if(grade==='' || major===''){
+                tableBody.append(
+                    "                <tr class='text-center'>\n" +
+                    "                    <td colspan='5'>\n" +
+                    "                        <div class='alert alert-warning'>\n" +
+                    "                            年级和专业序号不能为空。\n" +
+                    "                        </div>\n" +
+                    "                    </td>\n" +
+                    "                </tr>\n");
+            }else{
+                $.getJSON("courses/plan~"+grade+"="+major+"="+semester,function (result) {
+                    if(result.length === 0){
+                        tableBody.append(
+                            "                <tr class='text-center'>\n" +
+                            "                    <td colspan='5'>\n" +
+                            "                        <div class='alert alert-warning'>\n" +
+                            "                            根据以上条件未找到课程。\n" +
+                            "                        </div>\n" +
+                            "                    </td>\n" +
+                            "                </tr>\n");
+                    }
+                    else
+                        for(var i in result){
+                            tableBody.append("<tr class='info'>"+
+                                "<td>"+result[i]['courseId']+"</td>"+
+                                "<td>"+result[i]['name']+"</td>"+
+                                "<td>"+result[i]['credit']+"</td>"+
+                                "<td>"+result[i]['faculty']+"</td>"+
+                                "<td><input type='button' class='btn btn-success btn-xs' onclick='addOneCourse(\""+result[i]['courseId']+"\",\""+result[i]['name']+"\")' value='点击选择'/></td>"+
+                                "</tr>"
+                            )
+                        }
                 })
             }
         }
@@ -48,11 +142,11 @@
                             <a href="#">通过时间查找课程</a>
                         </li>
                     </ul>
-                    <form class="navbar-form navbar-left" role="search">
-                        <div class="form-group">
-                            <input name = "courseName" type="text" placeholder="请输入课程名称" class="form-control" />
-                        </div> <button type="submit" class="btn btn-info">按名称查找</button>
-                    </form>
+                    <div class="navbar-form navbar-left" role="search">
+                        <div class="form-group" id="courseNameDiv">
+                            <input id = "inputCourseName" name = "courseName" type="text" placeholder="请输入课程名称" class="form-control" />
+                        </div> <input type="button" class="btn btn-info" value="按名称查找" onclick="getCoursesByName(document.getElementById('inputCourseName').value)"/>
+                    </div>
                     <ul class="nav navbar-nav navbar-right">
                         <li>
                             <a href="#">注销</a>
@@ -88,7 +182,7 @@
                 <div class="col-md-9 column">
                     <div class="row clearfix">
                         <div class="col-md-4 column">
-                            <select class="form-control" name="grade" onchange="getMajorList(this.value)">
+                            <select class="form-control" id="gradeList" onchange="getMajorList(this.value)">
                                 <option value="">请选择年级</option>
                                 <option value="2015a">2015级</option>
                                 <option value="2016a">2016级</option>
@@ -102,7 +196,7 @@
                             </select>
                         </div>
                         <div class="col-md-4 column">
-                            <select class="form-control">
+                            <select class="form-control" id="semester">
                                 <option value="">选择学期</option>
                                 <option value="1a">大一上</option>
                                 <option value="1b">大一下</option>
@@ -117,98 +211,44 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-md-3 column">
-                    <button type="button" class="btn btn-info">按教学计划查找</button>
+                <div class="col-md-3 column text-center">
+                    <button type="button" class="btn btn-info" onclick="getCoursesByPlan(
+                        document.getElementById('gradeList').value,
+                        document.getElementById('majorList').value,
+                        document.getElementById('semester').value)">
+                        按教学计划查找
+                    </button>
                 </div>
             </div>
             <table class="table">
                 <thead>
                 <tr>
                     <th>
-                        编号
+                        课程编号
                     </th>
                     <th>
-                        产品
+                        课程名称
                     </th>
                     <th>
-                        交付时间
+                        学分
                     </th>
                     <th>
-                        状态
+                        开课学院
+                    </th>
+                    <th>
+                        选择
                     </th>
                 </tr>
                 </thead>
-                <tbody>
-                <tr>
-                    <td>
-                        1
-                    </td>
-                    <td>
-                        TB - Monthly
-                    </td>
-                    <td>
-                        01/04/2012
-                    </td>
-                    <td>
-                        Default
+                <tbody id="courseListForChoose">
+                <tr class="text-center">
+                    <td colspan="5">
+                        <div class="alert alert-info">
+                            课程搜索结果将在此处显示。
+                        </div>
                     </td>
                 </tr>
-                <tr class="success">
-                    <td>
-                        1
-                    </td>
-                    <td>
-                        TB - Monthly
-                    </td>
-                    <td>
-                        01/04/2012
-                    </td>
-                    <td>
-                        Approved
-                    </td>
-                </tr>
-                <tr class="error">
-                    <td>
-                        2
-                    </td>
-                    <td>
-                        TB - Monthly
-                    </td>
-                    <td>
-                        02/04/2012
-                    </td>
-                    <td>
-                        Declined
-                    </td>
-                </tr>
-                <tr class="warning">
-                    <td>
-                        3
-                    </td>
-                    <td>
-                        TB - Monthly
-                    </td>
-                    <td>
-                        03/04/2012
-                    </td>
-                    <td>
-                        Pending
-                    </td>
-                </tr>
-                <tr class="info">
-                    <td>
-                        4
-                    </td>
-                    <td>
-                        TB - Monthly
-                    </td>
-                    <td>
-                        04/04/2012
-                    </td>
-                    <td>
-                        Call in
-                    </td>
-                </tr>
+
                 </tbody>
             </table>
         </div>
@@ -220,6 +260,9 @@
                 <thead>
                 <tr>
                     <th>
+                        序号
+                    </th>
+                    <th>
                         名称
                     </th>
                     <th>
@@ -227,50 +270,10 @@
                     </th>
                 </tr>
                 </thead>
-                <tbody>
-                <tr>
-                    <td>
-                        TB - Monthly
-                    </td>
-                    <td>
-                        Default
-                    </td>
-                </tr>
-                <tr class="success">
-                    <td>
-                        TB - Monthly
-                    </td>
-                    <td>
-                        Approved
-                    </td>
-                </tr>
-                <tr class="error">
-                    <td>
-                        TB - Monthly
-                    </td>
-                    <td>
-                        Declined
-                    </td>
-                </tr>
-                <tr class="warning">
-                    <td>
-                        TB - Monthly
-                    </td>
-                    <td>
-                        Pending
-                    </td>
-                </tr>
-                <tr class="info">
-                    <td>
-                        TB - Monthly
-                    </td>
-                    <td>
-                        Call in t
-                    </td>
-                </tr>
+                <tbody id="chosenCourses">
                 </tbody>
             </table>
-            <button id="next" type="button" class="btn btn-success">下一步</button>
+            <button id="next" type="button" disabled class="btn btn-success">下一步</button>
         </div>
     </div>
 </div>

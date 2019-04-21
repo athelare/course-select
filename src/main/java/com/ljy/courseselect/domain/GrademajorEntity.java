@@ -32,7 +32,7 @@ public class GrademajorEntity {
     }
 
     @Basic
-    @Column(name = "majorName", nullable = true, length = 20)
+    @Column(name = "majorName", length = 20)
     public String getMajorName() {
         return majorName;
     }

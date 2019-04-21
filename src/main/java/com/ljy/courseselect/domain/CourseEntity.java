@@ -32,7 +32,7 @@ public class CourseEntity {
     }
 
     @Basic
-    @Column(name = "credit", nullable = true, precision = 0)
+    @Column(name = "credit")
     public Double getCredit() {
         return credit;
     }
@@ -42,7 +42,7 @@ public class CourseEntity {
     }
 
     @Basic
-    @Column(name = "faculty", nullable = true, length = 20)
+    @Column(name = "faculty", length = 20)
     public String getFaculty() {
         return faculty;
     }
