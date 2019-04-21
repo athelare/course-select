@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence xmlns="http://java.sun.com/xml/ns/persistence" version="2.0">
+
+    <persistence-unit name="persistenceUnit">
+        <class>com.ljy.courseselect.domain.CourseEntity</class>
+        <class>com.ljy.courseselect.domain.GrademajorEntity</class>
+        <class>com.ljy.courseselect.domain.LessonEntity</class>
+        <class>com.ljy.courseselect.domain.LessontimeEntity</class>
+        <class>com.ljy.courseselect.domain.SpecialcoursesEntity</class>
+        <class>com.ljy.courseselect.domain.TeachplanEntity</class>
+        <properties>
+            <property name="hibernate.connection.url"
+                      value="jdbc:mysql://localhost:3306/csdb?characterEncoding=UTF8&amp;serverTimezone=Asia/Shanghai"/>
+            <property name="hibernate.connection.driver_class" value="com.mysql.cj.jdbc.Driver"/>
+        </properties>
+    </persistence-unit>
+</persistence>

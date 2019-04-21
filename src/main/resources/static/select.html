@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>选择需要的课程</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="css/jquery-ui.min.css">
+    <link rel="stylesheet" type="text/css" href="css/jquery-ui.theme.min.css">
+    <link rel="stylesheet" type="text/css" href="css/jquery-ui.structure.min.css">
+    <script type="text/javascript" src="js/jquery-3.4.0.min.js"></script>
+    <script type="text/javascript" src="js/jquery-ui.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+    <script type="text/javascript">
+        function getMajorList(gradeId){
+            var majors=$("#majorList")
+            if(gradeId===""){
+                majors.append('<option value="">请先选择年级</option>');
+                majors.attr("disabled","disabled");
+            }else{
+                majors.removeAttr('disabled');
+                majors.empty();
+                $.getJSON("majors/"+gradeId,function (result) {
+                    for(var i in result){
+                        if(result[i].hasOwnProperty('majorId') && result[i].hasOwnProperty('majorName')) {
+                            majors.append('<option value=' + result[i]['majorId'] + '>' + result[i]['majorName']  + '</option>');
+                        }
+                    }
+                })
+            }
+        }
+    </script>
+</head>
+<body>
+<div class="container">
+    <div class="row clearfix">
+        <div class="col-md-12 column">
+            <nav class="navbar navbar-default" role="navigation">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1"> <span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button> <a class="navbar-brand" href="select.html">选课规划</a>
+                </div>
+
+                <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                    <ul class="nav navbar-nav">
+                        <li class="active">
+                            <a href="#">通过教学计划查找课程</a>
+                        </li>
+                        <li>
+                            <a href="#">通过时间查找课程</a>
+                        </li>
+                    </ul>
+                    <form class="navbar-form navbar-left" role="search">
+                        <div class="form-group">
+                            <input name = "courseName" type="text" placeholder="请输入课程名称" class="form-control" />
+                        </div> <button type="submit" class="btn btn-info">按名称查找</button>
+                    </form>
+                    <ul class="nav navbar-nav navbar-right">
+                        <li>
+                            <a href="#">注销</a>
+                        </li>
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown<strong class="caret"></strong></a>
+                            <ul class="dropdown-menu">
+                                <li>
+                                    <a href="#">Action</a>
+                                </li>
+                                <li>
+                                    <a href="#">Another action</a>
+                                </li>
+                                <li>
+                                    <a href="#">Something else here</a>
+                                </li>
+                                <li class="divider">
+                                </li>
+                                <li>
+                                    <a href="#">Separated link</a>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+
+            </nav>
+        </div>
+    </div>
+    <div class="row clearfix">
+        <div class="col-md-9 column">
+            <div class="row clearfix">
+                <div class="col-md-9 column">
+                    <div class="row clearfix">
+                        <div class="col-md-4 column">
+                            <select class="form-control" name="grade" onchange="getMajorList(this.value)">
+                                <option value="">请选择年级</option>
+                                <option value="2015a">2015级</option>
+                                <option value="2016a">2016级</option>
+                                <option value="2017a">2017级</option>
+                                <option value="2018a">2018级</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4 column">
+                            <select id="majorList" class="form-control" disabled>
+                                <option value="">选择专业（先选年级）</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4 column">
+                            <select class="form-control">
+                                <option value="">选择学期</option>
+                                <option value="1a">大一上</option>
+                                <option value="1b">大一下</option>
+                                <option value="2a">大二上</option>
+                                <option value="2b">大二下</option>
+                                <option value="3a">大三上</option>
+                                <option value="3b">大三下</option>
+                                <option value="4a">大四上</option>
+                                <option value="4b">大四下</option>
+                            </select>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 column">
+                    <button type="button" class="btn btn-info">按教学计划查找</button>
+                </div>
+            </div>
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>
+                        编号
+                    </th>
+                    <th>
+                        产品
+                    </th>
+                    <th>
+                        交付时间
+                    </th>
+                    <th>
+                        状态
+                    </th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>
+                        1
+                    </td>
+                    <td>
+                        TB - Monthly
+                    </td>
+                    <td>
+                        01/04/2012
+                    </td>
+                    <td>
+                        Default
+                    </td>
+                </tr>
+                <tr class="success">
+                    <td>
+                        1
+                    </td>
+                    <td>
+                        TB - Monthly
+                    </td>
+                    <td>
+                        01/04/2012
+                    </td>
+                    <td>
+                        Approved
+                    </td>
+                </tr>
+                <tr class="error">
+                    <td>
+                        2
+                    </td>
+                    <td>
+                        TB - Monthly
+                    </td>
+                    <td>
+                        02/04/2012
+                    </td>
+                    <td>
+                        Declined
+                    </td>
+                </tr>
+                <tr class="warning">
+                    <td>
+                        3
+                    </td>
+                    <td>
+                        TB - Monthly
+                    </td>
+                    <td>
+                        03/04/2012
+                    </td>
+                    <td>
+                        Pending
+                    </td>
+                </tr>
+                <tr class="info">
+                    <td>
+                        4
+                    </td>
+                    <td>
+                        TB - Monthly
+                    </td>
+                    <td>
+                        04/04/2012
+                    </td>
+                    <td>
+                        Call in
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="col-md-3 column text-center">
+            <h3>
+                已经选择的课程
+            </h3>
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>
+                        名称
+                    </th>
+                    <th>
+                        操作
+                    </th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>
+                        TB - Monthly
+                    </td>
+                    <td>
+                        Default
+                    </td>
+                </tr>
+                <tr class="success">
+                    <td>
+                        TB - Monthly
+                    </td>
+                    <td>
+                        Approved
+                    </td>
+                </tr>
+                <tr class="error">
+                    <td>
+                        TB - Monthly
+                    </td>
+                    <td>
+                        Declined
+                    </td>
+                </tr>
+                <tr class="warning">
+                    <td>
+                        TB - Monthly
+                    </td>
+                    <td>
+                        Pending
+                    </td>
+                </tr>
+                <tr class="info">
+                    <td>
+                        TB - Monthly
+                    </td>
+                    <td>
+                        Call in t
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+            <button id="next" type="button" class="btn btn-success">下一步</button>
+        </div>
+    </div>
+</div>
+</body>
+</html>
