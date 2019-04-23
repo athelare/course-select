@@ -4,8 +4,10 @@ import com.ljy.courseselect.domain.LessonEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface LessonDao extends JpaRepository<LessonEntity,Long> {
-    String findLessonEntityByLessonId(String lessonId);
-    String findLessonEntitiesByCourseId(String courseId);
+    LessonEntity findLessonEntityByLessonId(String lessonId);
+    List<LessonEntity> findLessonEntitiesByCourseId(String courseId);
 }

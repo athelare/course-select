@@ -22,17 +22,27 @@ public class GetCourseList {
         return courseList.findCoursesByName('%'+courseName+'%');
     }
 
-    @RequestMapping("/plan~{gradeId}={majorId}={semester}")
+    @RequestMapping("/plan/{gradeId}/{majorId}/{semester}")
     @ResponseBody
     public List<CourseEntity>findCourseByTeachPlan(
             @PathVariable String gradeId,
             @PathVariable String majorId,
             @PathVariable String semester
     ){
+        if(semester.charAt(0)=='n')semester="";
         return courseList.findCoursesByTeachPlan(
                 gradeId,
                 majorId,
                 '%'+semester+'%'
         );
+    }
+
+    @RequestMapping("/type/{type}/{time}")
+    @ResponseBody
+    public List<CourseEntity>findCourseByType(
+            @PathVariable String type,
+            @PathVariable Long time
+    ){
+        return courseList.findCoursesByCourseType(type,time);
     }
 }

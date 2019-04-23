@@ -13,6 +13,8 @@ public class LessonEntity {
     private Long halfA;
     private Long halfB;
     private String teacher;
+    private CourseEntity course;
+
 
     @Id
     @Column(name = "courseId", nullable = false, length = 8)

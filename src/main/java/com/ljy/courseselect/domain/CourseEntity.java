@@ -1,6 +1,7 @@
 package com.ljy.courseselect.domain;
 
 import javax.persistence.*;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -10,6 +11,7 @@ public class CourseEntity {
     private String name;
     private Double credit;
     private String faculty;
+    private List<LessonEntity> lessons;
 
     @Id
     @Column(name = "courseId", nullable = false, length = 8)
@@ -66,4 +68,5 @@ public class CourseEntity {
     public int hashCode() {
         return Objects.hash(courseId, name, credit, faculty);
     }
+
 }

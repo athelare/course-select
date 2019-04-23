@@ -7,139 +7,39 @@
     <link rel="stylesheet" type="text/css" href="css/jquery-ui.min.css">
     <link rel="stylesheet" type="text/css" href="css/jquery-ui.theme.min.css">
     <link rel="stylesheet" type="text/css" href="css/jquery-ui.structure.min.css">
+    <link rel="stylesheet" type="text/css" href="css/pagination.css">
     <script type="text/javascript" src="js/jquery-3.4.0.min.js"></script>
     <script type="text/javascript" src="js/jquery-ui.min.js"></script>
+    <script type="text/javascript" src="js/jquery.pagination.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
-    <script type="text/javascript">
-        function getMajorList(gradeId){
-            var majors=$("#majorList");
-            majors.empty();
-
-            if(gradeId===""){
-                majors.append('<option value="">请先选择年级</option>');
-                majors.attr("disabled","disabled");
-            }else{
-                majors.removeAttr('disabled');
-                $.getJSON("majors/"+gradeId,function (result) {
-                    for(var i in result){
-                        if(result[i].hasOwnProperty('majorId') && result[i].hasOwnProperty('majorName')) {
-                            majors.append('<option value=' + result[i]['majorId'] + '>' + result[i]['majorName']  + '</option>');
-                        }
-                    }
-                })
-            }
-        }
-        function deleteOneCourse(courseId){
-            var chosenCourseTable = document.getElementById("chosenCourses");
-            for(var r = 0;r<chosenCourseTable.rows.length;++r)
-                if(courseId == chosenCourseTable.rows[r].cells[0].innerHTML){
-                chosenCourseTable.deleteRow(r);
-                if(chosenCourseTable.rows.length === 0){
-                    document.getElementById("next").setAttribute("disabled","disabled");
-                }
-                return;
-            }
-        }
-        function addOneCourse(courseId,courseName) {
-            var chosenCourseTable = document.getElementById('chosenCourses');
-            document.getElementById("next").removeAttribute("disabled");
-            for(var r = 0;r<chosenCourseTable.rows.length;++r)
-                if(courseId === chosenCourseTable.rows[r].cells[0].innerHTML)return;
-            var newRow = chosenCourseTable.insertRow();
-            newRow.innerHTML='<td>'+courseId+'</td><td>'+courseName+'</td><td><input type = button class="btn btn-danger btn-xs" value = "删除" onclick = deleteOneCourse("'+courseId+'")></td>';
-            newRow.setAttribute('class','success');
-        }
-        function getCoursesByName(name){
-            var inputName = $('#courseNameDiv');
-            if(name.length === 0){
-                inputName.addClass("has-error");
-                $('#inputCourseName').attr("placeholder","课程名称不能为空");
-            }else{
-                inputName.removeClass("has-error");
-                inputName.addClass("has-success");
-                var tableBody=$("#courseListForChoose");
-                tableBody.empty();
-                $.getJSON("courses/name="+name,function (result) {
-                    if(result.length === 0){
-                        tableBody.append(
-                            "                <tr class='text-center'>\n" +
-                            "                    <td colspan='5'>\n" +
-                            "                        <div class='alert alert-warning'>\n" +
-                            "                            未检索到名字包含'"+name+"'的课程。\n" +
-                            "                        </div>\n" +
-                            "                    </td>\n" +
-                            "                </tr>\n");
-                    }
-                    else
-                    for(var i in result){
-                        tableBody.append("<tr class='info'>"+
-                            "<td>"+result[i]['courseId']+"</td>"+
-                            "<td>"+result[i]['name']+"</td>"+
-                            "<td>"+result[i]['credit']+"</td>"+
-                            "<td>"+result[i]['faculty']+"</td>"+
-                            "<td><input type='button' class='btn btn-success btn-xs' onclick='addOneCourse(\""+result[i]['courseId']+"\",\""+result[i]['name']+"\")' value='点击选择'/></td>"+
-                            "</tr>"
-                        )
-                    }
-                })
-            }
-        }
-        function getCoursesByPlan(grade,major,semester){
-            var tableBody=$("#courseListForChoose");
-            tableBody.empty();
-            if(grade==='' || major===''){
-                tableBody.append(
-                    "                <tr class='text-center'>\n" +
-                    "                    <td colspan='5'>\n" +
-                    "                        <div class='alert alert-warning'>\n" +
-                    "                            年级和专业序号不能为空。\n" +
-                    "                        </div>\n" +
-                    "                    </td>\n" +
-                    "                </tr>\n");
-            }else{
-                $.getJSON("courses/plan~"+grade+"="+major+"="+semester,function (result) {
-                    if(result.length === 0){
-                        tableBody.append(
-                            "                <tr class='text-center'>\n" +
-                            "                    <td colspan='5'>\n" +
-                            "                        <div class='alert alert-warning'>\n" +
-                            "                            根据以上条件未找到课程。\n" +
-                            "                        </div>\n" +
-                            "                    </td>\n" +
-                            "                </tr>\n");
-                    }
-                    else
-                        for(var i in result){
-                            tableBody.append("<tr class='info'>"+
-                                "<td>"+result[i]['courseId']+"</td>"+
-                                "<td>"+result[i]['name']+"</td>"+
-                                "<td>"+result[i]['credit']+"</td>"+
-                                "<td>"+result[i]['faculty']+"</td>"+
-                                "<td><input type='button' class='btn btn-success btn-xs' onclick='addOneCourse(\""+result[i]['courseId']+"\",\""+result[i]['name']+"\")' value='点击选择'/></td>"+
-                                "</tr>"
-                            )
-                        }
-                })
-            }
-        }
-    </script>
+    <script type="text/javascript" src="js/selectPage.js"></script>
 </head>
 <body>
 <div class="container">
+    <!--标题栏-->
     <div class="row clearfix">
         <div class="col-md-12 column">
             <nav class="navbar navbar-default" role="navigation">
+                <!--选课规划系统标签-->
                 <div class="navbar-header">
-                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1"> <span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button> <a class="navbar-brand" href="select.html">选课规划</a>
+                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1"> <span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button> <a class="navbar-brand">选课规划系统</a>
                 </div>
 
                 <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                     <ul class="nav navbar-nav">
-                        <li class="active">
-                            <a href="#">通过教学计划查找课程</a>
+                        <li class="active" id="btn_byPlan">
+                            <a style="cursor:pointer"
+                               onclick="$('#btn_byTime').removeClass('active');
+                                        $('#btn_byPlan').addClass('active');
+                                        $('#findByPlan').css('display','');
+                                        $('#findByTime').css('display','none');  ">通过教学计划查找课程</a>
                         </li>
-                        <li>
-                            <a href="#">通过时间查找课程</a>
+                        <li id="btn_byTime">
+                            <a style="cursor:pointer"
+                               onclick="$('#btn_byPlan').removeClass('active');
+                                        $('#btn_byTime').addClass('active');
+                                        $('#findByPlan').css('display','none');
+                                        $('#findByTime').css('display','');">通过时间查找课程</a>
                         </li>
                     </ul>
                     <div class="navbar-form navbar-left" role="search">
@@ -152,21 +52,16 @@
                             <a href="#">注销</a>
                         </li>
                         <li class="dropdown">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown<strong class="caret"></strong></a>
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">选项<strong class="caret"></strong></a>
                             <ul class="dropdown-menu">
                                 <li>
-                                    <a href="#">Action</a>
+                                    <a href="#">个人信息</a>
                                 </li>
                                 <li>
-                                    <a href="#">Another action</a>
+                                    <a href="#">联系我们</a>
                                 </li>
                                 <li>
-                                    <a href="#">Something else here</a>
-                                </li>
-                                <li class="divider">
-                                </li>
-                                <li>
-                                    <a href="#">Separated link</a>
+                                    <a href="#">网站说明</a>
                                 </li>
                             </ul>
                         </li>
@@ -176,9 +71,13 @@
             </nav>
         </div>
     </div>
+
+    <!--主体-->
     <div class="row clearfix">
-        <div class="col-md-9 column">
-            <div class="row clearfix">
+        <!--左边栏-->
+        <div class="col-md-9 column text-center">
+            <!--通过教学计划查询课程-->
+            <div class="row clearfix" id="findByPlan">
                 <div class="col-md-9 column">
                     <div class="row clearfix">
                         <div class="col-md-4 column">
@@ -197,7 +96,7 @@
                         </div>
                         <div class="col-md-4 column">
                             <select class="form-control" id="semester">
-                                <option value="">选择学期</option>
+                                <option value="n">选择学期</option>
                                 <option value="1a">大一上</option>
                                 <option value="1b">大一下</option>
                                 <option value="2a">大二上</option>
@@ -220,6 +119,70 @@
                     </button>
                 </div>
             </div>
+            <!--通过时间段查询课程-->
+            <div class="row clearfix" style="display: none" id="findByTime">
+                <div class="col-md-12 column">
+                    <div class="row clearfix">
+                        <div class="col-md-12 column">
+                            <form class="form-horizontal" role="form">
+                                <div class="form-group">
+                                    <label for="type" class="col-md-4 control-label">首先选课程类型，然后选择时间段</label>
+                                    <div class="col-md-4">
+                                        <select class="form-control" id = "type">
+                                            <option value = "1">文化素质类</option>
+                                            <option value = "2">英语类</option>
+                                            <option value = "3">计算机类</option>
+                                            <option value = "4">体育类</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-4"></div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    <table class="table table-bordered">
+                        <thead><tr><th style='width:50px;'>节</th><th>周一</th><th>周二</th><th>周三</th><th>周四</th><th>周五</th></tr></thead><tbody><tr><td>1</td>
+                        <td rowspan=2 onclick='getCourseByTime("3")' class='btn-success' style='cursor:pointer;'></td>
+                        <td rowspan=2 onclick='getCourseByTime("24576")' class='btn-success' style='cursor:pointer;'></td>
+                        <td rowspan=2 onclick='getCourseByTime("201326592")' class='btn-success' style='cursor:pointer;'></td>
+                        <td rowspan=2 onclick='getCourseByTime("1649267441664")' class='btn-success' style='cursor:pointer;'></td>
+                        <td rowspan=2 onclick='getCourseByTime("13510798882111488")' class='btn-success' style='cursor:pointer;'></td>
+                    </tr><tr><td>2</td></tr><tr><td>3</td>
+                        <td rowspan=2 onclick='getCourseByTime("12")' class='btn-success' style='cursor:pointer;'></td>
+                        <td rowspan=2 onclick='getCourseByTime("98304")' class='btn-success' style='cursor:pointer;'></td>
+                        <td rowspan=2 onclick='getCourseByTime("805306368")' class='btn-success' style='cursor:pointer;'></td>
+                        <td rowspan=2 onclick='getCourseByTime("6597069766656")' class='btn-success' style='cursor:pointer;'></td>
+                        <td rowspan=2 onclick='getCourseByTime("54043195528445952")' class='btn-success' style='cursor:pointer;'></td>
+                    </tr><tr><td>4</td></tr><tr><td>5</td>
+                        <td rowspan=2 onclick='getCourseByTime("48")' class='btn-success' style='cursor:pointer;'></td>
+                        <td rowspan=2 onclick='getCourseByTime("393216")' class='btn-success' style='cursor:pointer;'></td>
+                        <td rowspan=2 onclick='getCourseByTime("3221225472")' class='btn-success' style='cursor:pointer;'></td>
+                        <td rowspan=2 onclick='getCourseByTime("26388279066624")' class='btn-success' style='cursor:pointer;'></td>
+                        <td rowspan=2 onclick='getCourseByTime("216172782113783808")' class='btn-success' style='cursor:pointer;'></td>
+                    </tr><tr><td>6</td></tr><tr><td>7</td>
+                        <td rowspan=3 onclick='getCourseByTime("448")' class='btn-success' style='cursor:pointer;'></td>
+                        <td rowspan=3 onclick='getCourseByTime("3670016")' class='btn-success' style='cursor:pointer;'></td>
+                        <td rowspan=3 onclick='getCourseByTime("30064771072")' class='btn-success' style='cursor:pointer;'></td>
+                        <td rowspan=3 onclick='getCourseByTime("246290604621824")' class='btn-success' style='cursor:pointer;'></td>
+                        <td rowspan=3 onclick='getCourseByTime("2017612633061982208")' class='btn-success' style='cursor:pointer;'></td>
+                    </tr><tr><td>8</td></tr><tr><td>9</td></tr><tr><td>10</td>
+                        <td rowspan=2 onclick='getCourseByTime("1536")' class='btn-success' style='cursor:pointer;'></td>
+                        <td rowspan=2 onclick='getCourseByTime("12582912")' class='btn-success' style='cursor:pointer;'></td>
+                        <td rowspan=2 onclick='getCourseByTime("103079215104")' class='btn-success' style='cursor:pointer;'></td>
+                        <td rowspan=2 onclick='getCourseByTime("844424930131968")' class='btn-success' style='cursor:pointer;'></td>
+                        <td rowspan=2 onclick='getCourseByTime("6917529027641081856")' class='btn-success' style='cursor:pointer;'></td>
+                    </tr><tr><td>11</td></tr><tr><td>12</td>
+                        <td rowspan=2 onclick='getCourseByTime("6144")' class='btn-success' style='cursor:pointer;'></td>
+                        <td rowspan=2 onclick='getCourseByTime("50331648")' class='btn-success' style='cursor:pointer;'></td>
+                        <td rowspan=2 onclick='getCourseByTime("412316860416")' class='btn-success' style='cursor:pointer;'></td>
+                        <td rowspan=2 onclick='getCourseByTime("3377699720527872")' class='btn-success' style='cursor:pointer;'></td>
+                        <td rowspan=2 onclick='getCourseByTime("-9223372036854775808")' class='btn-success' style='cursor:pointer;'></td>
+                    </tr><tr><td>13</td></tr></tbody>
+                    </table>
+
+                </div>
+            </div>
+            <!--显示课程搜索的结果-->
             <table class="table">
                 <thead>
                 <tr>
@@ -251,7 +214,9 @@
 
                 </tbody>
             </table>
+            <div id="Pagination" class="pagination" style="display:block"><!-- 这里显示分页 --></div>
         </div>
+        <!--右边：显示已经选择的课程-->
         <div class="col-md-3 column text-center">
             <h3>
                 已经选择的课程
@@ -277,5 +242,7 @@
         </div>
     </div>
 </div>
+<!--存储结果，用于分页处理-->
+<table style="display: none;" id="hiddenResult"></table>
 </body>
 </html>
