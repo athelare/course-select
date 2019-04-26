@@ -1,33 +1,25 @@
 package com.ljy.courseselect.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
+import java.util.Collection;
 import java.util.Objects;
 
 @Entity
-@Table(name = "lesson", schema = "csdb")
-@IdClass(LessonEntityPK.class)
+@Table(name = "lesson", schema = "course_select")
 public class LessonEntity {
-    private String courseId;
     private String lessonId;
-    private String recommend;
-    private Long halfA;
-    private Long halfB;
-    private String teacher;
-    private CourseEntity course;
-
-
-    @Id
-    @Column(name = "courseId", nullable = false, length = 8)
-    public String getCourseId() {
-        return courseId;
-    }
-
-    public void setCourseId(String courseId) {
-        this.courseId = courseId;
-    }
+    private String courseId;
+    private String teacherName;
+    private String advice;
+    private Long firstHalf;
+    private Long secondHalf;
+    private CourseEntity courseByCourseId;
+    private Collection<LessonTimeEntity> lessonTimesByLessonId;
 
     @Id
-    @Column(name = "lessonId", nullable = false, length = 8)
+    @Column(name = "lesson_id", nullable = false, length = 10)
     public String getLessonId() {
         return lessonId;
     }
@@ -37,43 +29,53 @@ public class LessonEntity {
     }
 
     @Basic
-    @Column(name = "recommend", length = 20)
-    public String getRecommend() {
-        return recommend;
+    @Column(name="course_id", nullable = false,length = 10)
+    public String getCourseId() {
+        return courseId;
     }
 
-    public void setRecommend(String recommend) {
-        this.recommend = recommend;
-    }
-
-    @Basic
-    @Column(name = "halfA")
-    public Long getHalfA() {
-        return halfA;
-    }
-
-    public void setHalfA(Long halfA) {
-        this.halfA = halfA;
+    public void setCourseId(String courseId) {
+        this.courseId = courseId;
     }
 
     @Basic
-    @Column(name = "halfB")
-    public Long getHalfB() {
-        return halfB;
+    @Column(name = "teacher_name", nullable = true, length = 30)
+    public String getTeacherName() {
+        return teacherName;
     }
 
-    public void setHalfB(Long halfB) {
-        this.halfB = halfB;
+    public void setTeacherName(String teacherName) {
+        this.teacherName = teacherName;
     }
 
     @Basic
-    @Column(name = "teacher", length = 15)
-    public String getTeacher() {
-        return teacher;
+    @Column(name = "advice", nullable = true, length = 50)
+    public String getAdvice() {
+        return advice;
     }
 
-    public void setTeacher(String teacher) {
-        this.teacher = teacher;
+    public void setAdvice(String advice) {
+        this.advice = advice;
+    }
+
+    @Basic
+    @Column(name = "first_half", nullable = true)
+    public Long getFirstHalf() {
+        return firstHalf;
+    }
+
+    public void setFirstHalf(Long firstHalf) {
+        this.firstHalf = firstHalf;
+    }
+
+    @Basic
+    @Column(name = "second_half", nullable = true)
+    public Long getSecondHalf() {
+        return secondHalf;
+    }
+
+    public void setSecondHalf(Long secondHalf) {
+        this.secondHalf = secondHalf;
     }
 
     @Override
@@ -81,16 +83,37 @@ public class LessonEntity {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         LessonEntity that = (LessonEntity) o;
-        return Objects.equals(courseId, that.courseId) &&
-                Objects.equals(lessonId, that.lessonId) &&
-                Objects.equals(recommend, that.recommend) &&
-                Objects.equals(halfA, that.halfA) &&
-                Objects.equals(halfB, that.halfB) &&
-                Objects.equals(teacher, that.teacher);
+        return Objects.equals(lessonId, that.lessonId) &&
+                Objects.equals(teacherName, that.teacherName) &&
+                Objects.equals(advice, that.advice) &&
+                Objects.equals(firstHalf, that.firstHalf) &&
+                Objects.equals(secondHalf, that.secondHalf);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(courseId, lessonId, recommend, halfA, halfB, teacher);
+        return Objects.hash(lessonId, teacherName, advice, firstHalf, secondHalf);
     }
+
+    @ManyToOne
+    @JoinColumn(name = "course_id", referencedColumnName = "course_id",insertable = false,updatable = false)
+    public CourseEntity getCourseByCourseId() {
+        return courseByCourseId;
+    }
+
+    public void setCourseByCourseId(CourseEntity courseByCourseId) {
+        this.courseByCourseId = courseByCourseId;
+    }
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "lessonByLessonId",fetch = FetchType.EAGER)
+    public Collection<LessonTimeEntity> getLessonTimesByLessonId() {
+        return lessonTimesByLessonId;
+    }
+
+    public void setLessonTimesByLessonId(Collection<LessonTimeEntity> lessonTimesByLessonId) {
+        this.lessonTimesByLessonId = lessonTimesByLessonId;
+    }
+
+
 }

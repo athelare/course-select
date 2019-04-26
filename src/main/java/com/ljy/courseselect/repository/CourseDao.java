@@ -12,11 +12,11 @@ import java.util.List;
 public interface CourseDao extends JpaRepository<CourseEntity,Long> {
     CourseEntity findCourseEntityByCourseId(String courseId);
 
-    List<CourseEntity> findCourseEntitiesByNameLike(String name);
+    List<CourseEntity> findCourseEntitiesByCourseNameLike(String name);
 
-    @Query(nativeQuery = true,value = "SELECT course.* FROM course WHERE course_id in(\tSELECT course_id FROM teachplan WHERE grade_id=:grade AND major_id=:major AND semester_id LIKE CONCAT('%',:semester,'%'));")
+    @Query(nativeQuery = true,value = "SELECT course.* FROM course WHERE course_id in(\tSELECT course_id FROM teaching_plan WHERE grade_id=:grade AND major_id=:major AND semester_id LIKE CONCAT('%',:semester,'%'));")
     List<CourseEntity> findCourseEntitiesByTeachPlan(@Param("grade")String grade,@Param("major")String major,@Param("semester")String semester);
 
-    @Query(nativeQuery = true,value = "SELECT * FROM course WHERE course_id in( SELECT specialcourses.course_id AS course_id FROM specialcourses INNER JOIN lesson ON specialcourses.course_id=lesson.course_id WHERE ((lesson.halfA|lesson.halfB)& :reqTime )=0 AND specialcourses.course_type= :courseType GROUP BY specialcourses.course_id HAVING count(*)>0); ")
-    List<CourseEntity> findSpecialcoursesEntitiesByCourseType(@Param("reqTime")Long time, @Param("courseType") String type);
+    @Query(nativeQuery = true,value = "SELECT * FROM course WHERE course_id in( SELECT specific_course.course_id AS course_id FROM specific_course INNER JOIN lesson ON specific_course.course_id=lesson.course_id WHERE ((lesson.first_half|lesson.second_half)& :reqTime )=0 AND specific_course.course_type= :courseType GROUP BY specific_course.course_id HAVING count(*)>0); ")
+    List<CourseEntity> findSpecificCourseEntitiesByCourseType(@Param("reqTime")Long time, @Param("courseType") String type);
 }

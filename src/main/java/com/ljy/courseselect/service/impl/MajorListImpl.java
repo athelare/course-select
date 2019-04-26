@@ -1,6 +1,6 @@
 package com.ljy.courseselect.service.impl;
 
-import com.ljy.courseselect.domain.GrademajorEntity;
+import com.ljy.courseselect.domain.GradeMajorEntity;
 import com.ljy.courseselect.repository.GradeMajorDao;
 import com.ljy.courseselect.service.MajorListService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +14,7 @@ public class MajorListImpl implements MajorListService {
     GradeMajorDao gradeMajorDao;
 
     @Override
-    public List<GrademajorEntity> findMajorListByGradeId(String gradeId) {
-        return gradeMajorDao.findGrademajorEntitiesByGradeId(gradeId);
+    public List<GradeMajorEntity> findMajorListByGradeId(String gradeId) {
+        return gradeMajorDao.findGradeMajorEntitiesByGradeId(gradeId);
     }
 }

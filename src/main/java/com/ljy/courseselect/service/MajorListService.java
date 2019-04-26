@@ -1,9 +1,10 @@
 package com.ljy.courseselect.service;
 
-import com.ljy.courseselect.domain.GrademajorEntity;
+import com.ljy.courseselect.domain.GradeMajorEntity;
+
 import java.util.List;
 
 
 public interface MajorListService {
-    List<GrademajorEntity> findMajorListByGradeId(String gradeId);
+    List<GradeMajorEntity> findMajorListByGradeId(String gradeId);
 }

@@ -8,5 +8,5 @@ public interface CourseListService {
     List<CourseEntity>findCoursesByName(String name);
     List<CourseEntity>findCoursesByTeachPlan(String grade,String major,String semester);
     List<CourseEntity>findCoursesByCourseType(String type,Long time);
-
+    List<CourseEntity>findCoursesByCourseIdsWithLessons(List<String> courseId);
 }

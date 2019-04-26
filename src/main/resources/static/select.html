@@ -71,7 +71,6 @@
             </nav>
         </div>
     </div>
-
     <!--主体-->
     <div class="row clearfix">
         <!--左边栏-->
@@ -183,62 +182,59 @@
                 </div>
             </div>
             <!--显示课程搜索的结果-->
-            <table class="table">
-                <thead>
-                <tr>
-                    <th>
-                        课程编号
-                    </th>
-                    <th>
-                        课程名称
-                    </th>
-                    <th>
-                        学分
-                    </th>
-                    <th>
-                        开课学院
-                    </th>
-                    <th>
-                        选择
-                    </th>
-                </tr>
-                </thead>
-                <tbody id="courseListForChoose">
-                <tr class="text-center">
-                    <td colspan="5">
-                        <div class="alert alert-info">
-                            课程搜索结果将在此处显示。
-                        </div>
-                    </td>
-                </tr>
+            <div class="row clearfix" style="border: 1px solid lightgrey;border-radius: 15px;margin: auto;margin-top: 10px;">
+                <div class="col-md-12 column">
+                    <table class="table table-hover" style="border-bottom: 1px solid lightgray;">
+                        <thead>
+                        <tr>
+                            <th class="text-center">课程编号</th>
+                            <th class="text-center">课程名称</th>
+                            <th class="text-center">学分</th>
+                            <th class="text-center">开课学院</th>
+                            <th class="text-center">选择</th>
+                        </tr>
+                        </thead>
+                        <tbody id="courseListForChoose">
+                        <tr class="text-center">
+                            <td colspan="5">
+                                <div class="alert alert-info">
+                                    课程搜索结果将在此处显示。
+                                </div>
+                            </td>
+                        </tr>
 
-                </tbody>
-            </table>
-            <div id="Pagination" class="pagination" style="display:block"><!-- 这里显示分页 --></div>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <!-- 这里显示分页 -->
+            <div id="Pagination" class="pagination" style="display:block"></div>
         </div>
         <!--右边：显示已经选择的课程-->
         <div class="col-md-3 column text-center">
             <h3>
                 已经选择的课程
             </h3>
-            <table class="table">
-                <thead>
-                <tr>
-                    <th>
-                        序号
-                    </th>
-                    <th>
-                        名称
-                    </th>
-                    <th>
-                        操作
-                    </th>
-                </tr>
-                </thead>
-                <tbody id="chosenCourses">
-                </tbody>
-            </table>
-            <button id="next" type="button" disabled class="btn btn-success">下一步</button>
+            <form action="/courses/lessons" method="post">
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th>
+                            序号
+                        </th>
+                        <th>
+                            名称
+                        </th>
+                        <th>
+                            操作
+                        </th>
+                    </tr>
+                    </thead>
+                    <tbody id="chosenCourses">
+                    </tbody>
+                </table>
+                <input id="next" type="submit" value="下一步" disabled class="btn btn-success"/>
+            </form>
         </div>
     </div>
 </div>

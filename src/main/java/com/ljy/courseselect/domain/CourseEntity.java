@@ -1,20 +1,24 @@
 package com.ljy.courseselect.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
-import java.util.List;
+import java.util.Collection;
 import java.util.Objects;
 
 @Entity
-@Table(name = "course", schema = "csdb")
+@Table(name = "course", schema = "course_select")
 public class CourseEntity {
     private String courseId;
-    private String name;
+    private String courseName;
     private Double credit;
-    private String faculty;
-    private List<LessonEntity> lessons;
+    private String school;
+    private Collection<LessonEntity> lessonsByCourseId;
+    private Collection<SpecificCourseEntity> specificCoursesByCourseId;
+    private Collection<TeachingPlanEntity> teachingPlansByCourseId;
 
     @Id
-    @Column(name = "courseId", nullable = false, length = 8)
+    @Column(name = "course_id", nullable = false, length = 10)
     public String getCourseId() {
         return courseId;
     }
@@ -24,17 +28,17 @@ public class CourseEntity {
     }
 
     @Basic
-    @Column(name = "name", nullable = false, length = 30)
-    public String getName() {
-        return name;
+    @Column(name = "course_name", nullable = true, length = 50)
+    public String getCourseName() {
+        return courseName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setCourseName(String courseName) {
+        this.courseName = courseName;
     }
 
     @Basic
-    @Column(name = "credit")
+    @Column(name = "credit", nullable = true, precision = 1)
     public Double getCredit() {
         return credit;
     }
@@ -44,13 +48,13 @@ public class CourseEntity {
     }
 
     @Basic
-    @Column(name = "faculty", length = 20)
-    public String getFaculty() {
-        return faculty;
+    @Column(name = "school", nullable = true, length = 50)
+    public String getSchool() {
+        return school;
     }
 
-    public void setFaculty(String faculty) {
-        this.faculty = faculty;
+    public void setSchool(String school) {
+        this.school = school;
     }
 
     @Override
@@ -59,14 +63,43 @@ public class CourseEntity {
         if (o == null || getClass() != o.getClass()) return false;
         CourseEntity that = (CourseEntity) o;
         return Objects.equals(courseId, that.courseId) &&
-                Objects.equals(name, that.name) &&
+                Objects.equals(courseName, that.courseName) &&
                 Objects.equals(credit, that.credit) &&
-                Objects.equals(faculty, that.faculty);
+                Objects.equals(school, that.school);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(courseId, name, credit, faculty);
+        return Objects.hash(courseId, courseName, credit, school);
     }
 
+    @JsonIgnore
+    @OneToMany(mappedBy = "courseByCourseId")
+    public Collection<LessonEntity> getLessonsByCourseId() {
+        return lessonsByCourseId;
+    }
+
+    public void setLessonsByCourseId(Collection<LessonEntity> lessonsByCourseId) {
+        this.lessonsByCourseId = lessonsByCourseId;
+    }
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "courseByCourseId")
+    public Collection<SpecificCourseEntity> getSpecificCoursesByCourseId() {
+        return specificCoursesByCourseId;
+    }
+
+    public void setSpecificCoursesByCourseId(Collection<SpecificCourseEntity> specificCoursesByCourseId) {
+        this.specificCoursesByCourseId = specificCoursesByCourseId;
+    }
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "courseByCourseId")
+    public Collection<TeachingPlanEntity> getTeachingPlansByCourseId() {
+        return teachingPlansByCourseId;
+    }
+
+    public void setTeachingPlansByCourseId(Collection<TeachingPlanEntity> teachingPlansByCourseId) {
+        this.teachingPlansByCourseId = teachingPlansByCourseId;
+    }
 }

@@ -1,6 +1,6 @@
 package com.ljy.courseselect.controller;
 
-import com.ljy.courseselect.domain.GrademajorEntity;
+import com.ljy.courseselect.domain.GradeMajorEntity;
 import com.ljy.courseselect.service.impl.MajorListImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -18,7 +18,7 @@ public class GetMajorList {
 
     @RequestMapping("/{gradeId}")
     @ResponseBody
-    public List<GrademajorEntity> getMajors(@PathVariable String gradeId){
+    public List<GradeMajorEntity> getMajors(@PathVariable String gradeId){
         return majorList.findMajorListByGradeId(gradeId);
     }
 }

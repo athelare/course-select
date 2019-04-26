@@ -5,11 +5,11 @@ import javax.persistence.Id;
 import java.io.Serializable;
 import java.util.Objects;
 
-public class SpecialcoursesEntityPK implements Serializable {
+public class SpecificCourseEntityPK implements Serializable {
     private String courseType;
     private String courseId;
 
-    @Column(name = "courseType", nullable = false, length = 3)
+    @Column(name = "course_type", nullable = false, length = 3)
     @Id
     public String getCourseType() {
         return courseType;
@@ -19,7 +19,7 @@ public class SpecialcoursesEntityPK implements Serializable {
         this.courseType = courseType;
     }
 
-    @Column(name = "courseId", nullable = false, length = 8)
+    @Column(name = "course_id", nullable = false, length = 10)
     @Id
     public String getCourseId() {
         return courseId;
@@ -33,7 +33,7 @@ public class SpecialcoursesEntityPK implements Serializable {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        SpecialcoursesEntityPK that = (SpecialcoursesEntityPK) o;
+        SpecificCourseEntityPK that = (SpecificCourseEntityPK) o;
         return Objects.equals(courseType, that.courseType) &&
                 Objects.equals(courseId, that.courseId);
     }

@@ -1,18 +1,17 @@
 package com.ljy.courseselect.domain;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Id;
+import java.io.Serializable;
 import java.util.Objects;
 
-@Entity
-@Table(name = "grademajor", schema = "csdb")
-@IdClass(GrademajorEntityPK.class)
-public class GrademajorEntity {
+public class TeachingPlanEntityPK implements Serializable {
     private String gradeId;
     private String majorId;
-    private String majorName;
+    private String courseId;
 
+    @Column(name = "grade_id", nullable = false, length = 7)
     @Id
-    @Column(name = "gradeId", nullable = false, length = 7)
     public String getGradeId() {
         return gradeId;
     }
@@ -21,8 +20,8 @@ public class GrademajorEntity {
         this.gradeId = gradeId;
     }
 
+    @Column(name = "major_id", nullable = false, length = 20)
     @Id
-    @Column(name = "majorId", nullable = false, length = 20)
     public String getMajorId() {
         return majorId;
     }
@@ -31,28 +30,28 @@ public class GrademajorEntity {
         this.majorId = majorId;
     }
 
-    @Basic
-    @Column(name = "majorName", length = 20)
-    public String getMajorName() {
-        return majorName;
+    @Column(name = "course_id", nullable = false, length = 10)
+    @Id
+    public String getCourseId() {
+        return courseId;
     }
 
-    public void setMajorName(String majorName) {
-        this.majorName = majorName;
+    public void setCourseId(String courseId) {
+        this.courseId = courseId;
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        GrademajorEntity that = (GrademajorEntity) o;
+        TeachingPlanEntityPK that = (TeachingPlanEntityPK) o;
         return Objects.equals(gradeId, that.gradeId) &&
                 Objects.equals(majorId, that.majorId) &&
-                Objects.equals(majorName, that.majorName);
+                Objects.equals(courseId, that.courseId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(gradeId, majorId, majorName);
+        return Objects.hash(gradeId, majorId, courseId);
     }
 }

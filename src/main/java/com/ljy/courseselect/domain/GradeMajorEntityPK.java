@@ -5,11 +5,11 @@ import javax.persistence.Id;
 import java.io.Serializable;
 import java.util.Objects;
 
-public class GrademajorEntityPK implements Serializable {
+public class GradeMajorEntityPK implements Serializable {
     private String gradeId;
     private String majorId;
 
-    @Column(name = "gradeId", nullable = false, length = 7)
+    @Column(name = "grade_id", nullable = false, length = 7)
     @Id
     public String getGradeId() {
         return gradeId;
@@ -19,7 +19,7 @@ public class GrademajorEntityPK implements Serializable {
         this.gradeId = gradeId;
     }
 
-    @Column(name = "majorId", nullable = false, length = 20)
+    @Column(name = "major_id", nullable = false, length = 30)
     @Id
     public String getMajorId() {
         return majorId;
@@ -33,7 +33,7 @@ public class GrademajorEntityPK implements Serializable {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        GrademajorEntityPK that = (GrademajorEntityPK) o;
+        GradeMajorEntityPK that = (GradeMajorEntityPK) o;
         return Objects.equals(gradeId, that.gradeId) &&
                 Objects.equals(majorId, that.majorId);
     }

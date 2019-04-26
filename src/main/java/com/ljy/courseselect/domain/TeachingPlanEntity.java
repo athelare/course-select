@@ -4,18 +4,18 @@ import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
-@Table(name = "teachplan", schema = "csdb")
-@IdClass(TeachplanEntityPK.class)
-public class TeachplanEntity {
+@Table(name = "teaching_plan", schema = "course_select")
+@IdClass(TeachingPlanEntityPK.class)
+public class TeachingPlanEntity {
     private String gradeId;
     private String majorId;
-    private String majorName;
-    private String semesterId;
     private String courseId;
+    private String semesterId;
     private String courseType;
+    private CourseEntity courseByCourseId;
 
     @Id
-    @Column(name = "gradeId", nullable = false, length = 7)
+    @Column(name = "grade_id", nullable = false, length = 7)
     public String getGradeId() {
         return gradeId;
     }
@@ -25,7 +25,7 @@ public class TeachplanEntity {
     }
 
     @Id
-    @Column(name = "majorId", nullable = false, length = 20)
+    @Column(name = "major_id", nullable = false, length = 20)
     public String getMajorId() {
         return majorId;
     }
@@ -34,28 +34,8 @@ public class TeachplanEntity {
         this.majorId = majorId;
     }
 
-    @Basic
-    @Column(name = "majorName", length = 20)
-    public String getMajorName() {
-        return majorName;
-    }
-
-    public void setMajorName(String majorName) {
-        this.majorName = majorName;
-    }
-
     @Id
-    @Column(name = "semesterId", nullable = false, length = 5)
-    public String getSemesterId() {
-        return semesterId;
-    }
-
-    public void setSemesterId(String semesterId) {
-        this.semesterId = semesterId;
-    }
-
-    @Id
-    @Column(name = "courseId", nullable = false, length = 10)
+    @Column(name = "course_id", nullable = false, length = 10)
     public String getCourseId() {
         return courseId;
     }
@@ -65,7 +45,17 @@ public class TeachplanEntity {
     }
 
     @Basic
-    @Column(name = "courseType", length = 10)
+    @Column(name = "semester_id", nullable = true, length = 5)
+    public String getSemesterId() {
+        return semesterId;
+    }
+
+    public void setSemesterId(String semesterId) {
+        this.semesterId = semesterId;
+    }
+
+    @Basic
+    @Column(name = "course_type", nullable = true, length = 10)
     public String getCourseType() {
         return courseType;
     }
@@ -78,17 +68,26 @@ public class TeachplanEntity {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        TeachplanEntity that = (TeachplanEntity) o;
+        TeachingPlanEntity that = (TeachingPlanEntity) o;
         return Objects.equals(gradeId, that.gradeId) &&
                 Objects.equals(majorId, that.majorId) &&
-                Objects.equals(majorName, that.majorName) &&
-                Objects.equals(semesterId, that.semesterId) &&
                 Objects.equals(courseId, that.courseId) &&
+                Objects.equals(semesterId, that.semesterId) &&
                 Objects.equals(courseType, that.courseType);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(gradeId, majorId, majorName, semesterId, courseId, courseType);
+        return Objects.hash(gradeId, majorId, courseId, semesterId, courseType);
+    }
+
+    @ManyToOne
+    @JoinColumn(name = "course_id", referencedColumnName = "course_id", nullable = false,insertable = false,updatable = false)
+    public CourseEntity getCourseByCourseId() {
+        return courseByCourseId;
+    }
+
+    public void setCourseByCourseId(CourseEntity courseByCourseId) {
+        this.courseByCourseId = courseByCourseId;
     }
 }

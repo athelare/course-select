@@ -20,12 +20,12 @@ function fillCourseList(result) {
     }
     else {
         for (var i in result) {
-            hiddenResult.append("<tr class='info'>" +
+            hiddenResult.append("<tr>" +
                 "<td>" + result[i]['courseId'] + "</td>" +
-                "<td>" + result[i]['name'] + "</td>" +
+                "<td>" + result[i]['courseName'] + "</td>" +
                 "<td>" + result[i]['credit'] + "</td>" +
-                "<td>" + result[i]['faculty'] + "</td>" +
-                "<td><input type='button' class='btn btn-success btn-xs' onclick='addOneCourse(\"" + result[i]['courseId'] + "\",\"" + result[i]['name'] + "\")' value='点击选择'/></td>" +
+                "<td>" + result[i]['school'] + "</td>" +
+                "<td><input type='button' class='btn btn-success btn-xs' onclick='addOneCourse(\"" + result[i]['courseId'] + "\",\"" + result[i]['courseName'] + "\")' value='点击选择'/></td>" +
                 "</tr>"
             )
         }
@@ -99,7 +99,7 @@ function addOneCourse(courseId,courseName) {
     for(var r = 0;r<chosenCourseTable.rows.length;++r)
         if(courseId === chosenCourseTable.rows[r].cells[0].innerHTML)return;
     var newRow = chosenCourseTable.insertRow();
-    newRow.innerHTML='<td>'+courseId+'</td><td>'+courseName+'</td><td><input type = button class="btn btn-danger btn-xs" value = "删除" onclick = deleteOneCourse("'+courseId+'")></td>';
+    newRow.innerHTML='<td>'+courseId+'</td><td>'+courseName+'</td><td><input type="hidden" name="courseId" value="'+courseId+'"><input type = button class="btn btn-danger btn-xs" value = "删除" onclick = deleteOneCourse("'+courseId+'")></td>';
     newRow.setAttribute('class','success');
 }
 function getCoursesByName(name){
@@ -117,8 +117,8 @@ function getCoursesByName(name){
 }
 function getCoursesByPlan(grade,major,semester){
     var tableBody=$("#courseListForChoose");
-    tableBody.empty();
     if(grade==='' || major===''){
+        tableBody.empty();
         tableBody.append(
             "                <tr class='text-center'>\n" +
             "                    <td colspan='5'>\n" +

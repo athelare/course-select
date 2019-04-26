@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>选择时间段和开课班级</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="http://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script type="text/javascript" src="https://code.jquery.com/jquery-3.4.0.min.js"></script>
+    <script src="http://code.jquery.com/ui/1.12.1/jquery-ui.min.js" integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+    <script type="text/javascript">
+        function changeColor(thisOne) {
+            self=$(thisOne);
+            if(self.hasClass('btn-success')){
+                self.addClass('btn-danger');
+                self.removeClass('btn-success');
+            }else{
+                self.addClass('btn-success');
+                self.removeClass('btn-danger');
+            }
+        }
+        function submitCheck(){
+            console.log('检查是不是每门课都选了开课班级。')
+            var tables=$('table.table tbody');
+            for(var i=1;i<tables.length;++i){
+                var flag=false;
+                for(var j=0;j<tables[i].rows.length;++j){
+                    if(tables[i].rows[j].cells[3].firstChild.checked === true){
+                        flag=true;
+                        break;
+                    }
+                }
+                if(flag===false){
+                    alert('每门课程至少要选择一个开课班级！')
+                    return false;
+                }
+            }
+            return true;
+        }
+        function selectAll(thisOne) {
+            var tBody = thisOne.
+                parentElement.
+                parentElement.
+                parentElement.
+                nextSibling.
+                nextSibling;
+            for(var i=0;i<tBody.rows.length;++i){
+                var row=tBody.rows[i];
+                row.cells[3].firstChild.checked=thisOne.checked;
+            }
+        }
+
+    </script>
+</head>
+<body>
+<div class="container">
+    <!--标题栏-->
+    <div class="row clearfix">
+        <div class="col-md-12 column">
+            <nav class="navbar navbar-default" role="navigation">
+                <!--选课规划系统标签-->
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1"> <span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button> <a class="navbar-brand">选课规划系统</a>
+                </div>
+
+                <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                    <ul class="nav navbar-nav">
+                        <li class="active" id="btn_freeTime">
+                            <a style="cursor:pointer"
+                               onclick="$('#btn_chooseLesson').removeClass('active');
+                                        $('#btn_freeTime').addClass('active');
+                                        $('#chooseLesson').css('display','none');
+                                        $('#chooseTime').css('display','');">选择空闲时段</a>
+                        </li>
+                        <li id="btn_chooseLesson">
+                            <a style="cursor:pointer"
+                               onclick="$('#btn_freeTime').removeClass('active');
+                                        $('#btn_chooseLesson').addClass('active');
+                                        $('#chooseTime').css('display','none');
+                                        $('#chooseLesson').css('display','');">选择开课班级</a>
+                        </li>
+                    </ul>
+
+                    <ul class="nav navbar-nav navbar-right">
+                        <li>
+                            <a href="#">注销</a>
+                        </li>
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">选项<strong class="caret"></strong></a>
+                            <ul class="dropdown-menu">
+                                <li>
+                                    <a href="#">个人信息</a>
+                                </li>
+                                <li>
+                                    <a href="#">联系我们</a>
+                                </li>
+                                <li>
+                                    <a href="#">网站说明</a>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+
+            </nav>
+        </div>
+    </div>
+    <!--主体-->
+    <form action="/generate" onsubmit="return submitCheck()">
+        <div class="row clearfix">
+            <div class="col-md-12 column">
+                <!--选择空余时间段-->
+                <div class="row clearfix" id="chooseTime">
+                    <div class="col-md-1 column">
+                    </div>
+                    <div class="col-md-8 column text-center">
+                        <h4>选择空闲时间段：绿色代表OK，红色代表忙，点击方格会改变颜色。</h4>
+                        <div class="row clearfix">
+                            <div class="col-md-12 column">
+                                <table class="table table-bordered">
+                                    <thead>
+                                    <tr>
+                                        <th style='width:50px;'>节次</th>
+                                        <th>周一</th>
+                                        <th>周二</th>
+                                        <th>周三</th>
+                                        <th>周四</th>
+                                        <th>周五</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr>
+                                        <td>1</td>
+                                        <td rowspan=2 onclick='$("#bit0").click();changeColor(this);' class='btn-success' style='cursor:pointer;'></td>
+                                        <td rowspan=2 onclick='$("#bit1").click();changeColor(this);' class='btn-success' style='cursor:pointer;'></td>
+                                        <td rowspan=2 onclick='$("#bit2").click();changeColor(this);' class='btn-success' style='cursor:pointer;'></td>
+                                        <td rowspan=2 onclick='$("#bit3").click();changeColor(this);' class='btn-success' style='cursor:pointer;'></td>
+                                        <td rowspan=2 onclick='$("#bit4").click();changeColor(this);' class='btn-success' style='cursor:pointer;'></td>
+                                    </tr>
+                                    <tr>
+                                        <td>2</td>
+                                    </tr>
+                                    <tr>
+                                        <td>3</td>
+                                        <td rowspan=2 onclick='$("#bit5").click();changeColor(this);' class='btn-success' style='cursor:pointer;'></td>
+                                        <td rowspan=2 onclick='$("#bit6").click();changeColor(this);' class='btn-success' style='cursor:pointer;'></td>
+                                        <td rowspan=2 onclick='$("#bit7").click();changeColor(this);' class='btn-success' style='cursor:pointer;'></td>
+                                        <td rowspan=2 onclick='$("#bit8").click();changeColor(this);' class='btn-success' style='cursor:pointer;'></td>
+                                        <td rowspan=2 onclick='$("#bit9").click();changeColor(this);' class='btn-success' style='cursor:pointer;'></td>
+                                    </tr>
+                                    <tr>
+                                        <td>4</td>
+                                    </tr>
+                                    <tr>
+                                        <td>5</td>
+                                        <td rowspan=2 onclick='$("#bit10").click();changeColor(this);' class='btn-success' style='cursor:pointer;'></td>
+                                        <td rowspan=2 onclick='$("#bit11").click();changeColor(this);' class='btn-success' style='cursor:pointer;'></td>
+                                        <td rowspan=2 onclick='$("#bit12").click();changeColor(this);' class='btn-success' style='cursor:pointer;'></td>
+                                        <td rowspan=2 onclick='$("#bit13").click();changeColor(this);' class='btn-success' style='cursor:pointer;'></td>
+                                        <td rowspan=2 onclick='$("#bit14").click();changeColor(this);' class='btn-success' style='cursor:pointer;'></td>
+                                    </tr>
+                                    <tr>
+                                        <td>6</td>
+                                    </tr>
+                                    <tr>
+                                        <td>7</td>
+                                        <td rowspan=3 onclick='$("#bit15").click();changeColor(this);' class='btn-success' style='cursor:pointer;'></td>
+                                        <td rowspan=3 onclick='$("#bit16").click();changeColor(this);' class='btn-success' style='cursor:pointer;'></td>
+                                        <td rowspan=3 onclick='$("#bit17").click();changeColor(this);' class='btn-success' style='cursor:pointer;'></td>
+                                        <td rowspan=3 onclick='$("#bit18").click();changeColor(this);' class='btn-success' style='cursor:pointer;'></td>
+                                        <td rowspan=3 onclick='$("#bit19").click();changeColor(this);' class='btn-success' style='cursor:pointer;'></td>
+                                    </tr>
+                                    <tr>
+                                        <td>8</td>
+                                    </tr>
+                                    <tr>
+                                        <td>9</td>
+                                    </tr>
+                                    <tr>
+                                        <td>10</td>
+                                        <td rowspan=2 onclick='$("#bit20").click();changeColor(this);' class='btn-success' style='cursor:pointer;'></td>
+                                        <td rowspan=2 onclick='$("#bit21").click();changeColor(this);' class='btn-success' style='cursor:pointer;'></td>
+                                        <td rowspan=2 onclick='$("#bit22").click();changeColor(this);' class='btn-success' style='cursor:pointer;'></td>
+                                        <td rowspan=2 onclick='$("#bit23").click();changeColor(this);' class='btn-success' style='cursor:pointer;'></td>
+                                        <td rowspan=2 onclick='$("#bit24").click();changeColor(this);' class='btn-success' style='cursor:pointer;'></td>
+                                    </tr>
+                                    <tr>
+                                        <td>11</td>
+                                    </tr>
+                                    <tr>
+                                        <td>12</td>
+                                        <td rowspan=2 onclick='$("#bit25").click();changeColor(this);' class='btn-success' style='cursor:pointer;'></td>
+                                        <td rowspan=2 onclick='$("#bit26").click();changeColor(this);' class='btn-success' style='cursor:pointer;'></td>
+                                        <td rowspan=2 onclick='$("#bit27").click();changeColor(this);' class='btn-success' style='cursor:pointer;'></td>
+                                        <td rowspan=2 onclick='$("#bit28").click();changeColor(this);' class='btn-success' style='cursor:pointer;'></td>
+                                        <td rowspan=2 onclick='$("#bit29").click();changeColor(this);' class='btn-success' style='cursor:pointer;'></td>
+                                    </tr>
+                                    <tr>
+                                        <td>13</td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 column text-center">
+                        <button type="button" class="btn btn-primary"
+                                style="margin-top:50px"
+                                onclick="$('#btn_freeTime').removeClass('active');
+                                        $('#btn_chooseLesson').addClass('active');
+                                        $('#chooseTime').css('display','none');
+                                        $('#chooseLesson').css('display','');">继续进行下一步</button>
+                    </div>
+                </div>
+                <!--选择开设的课程-->
+                <div class="row clearfix" id="chooseLesson" style="display: none;">
+                    <div class="col-md-1 column">
+                    </div>
+                    <div class="col-md-8 column">
+                        <div th:each="course:${courses}" class="row clearfix">
+                            <div class="col-md-12 column text-center" style="border-radius: 15px;
+                                                                             margin-top: 10px;
+                                                                             background-color: rgba(220,220,220,0.5);  ">
+                                <h4 th:text="${course.getCourseName()}">概率论与数理统计</h4>
+                                <input type="hidden" name="courseId" th:value="${course.getCourseId()}" />
+                                <table class="table">
+                                    <thead>
+                                    <tr>
+                                        <th style="text-align: center">
+                                            教师
+                                        </th>
+                                        <th style="text-align: center">
+                                            上课时间地点
+                                        </th>
+                                        <th style="text-align: center">
+                                            选课建议
+                                        </th>
+                                        <th style="text-align: center">
+                                            <input type="checkbox" checked onclick="selectAll(this)">
+                                        </th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr th:each="lesson:${course.getLessonsByCourseId()}">
+                                        <td  style="vertical-align: middle" th:text="${lesson.getTeacherName()}">著名教师</td>
+                                        <td style="vertical-align: middle">
+                                            <div th:each="lessonTime:${lesson.getLessonTimesByLessonId()}">
+                                                <div th:text="${lessonTime.getTime()+' '+lessonTime.getPlace()}">上课时间地点</div>
+                                            </div>
+                                        </td>
+                                        <td style="vertical-align: middle" th:text="${lesson.getAdvice()}">选课建议</td>
+                                        <td style="vertical-align: middle" ><input type="checkbox" style="display: inline" class="checkbox" name="lessonId" th:value="${lesson.getLessonId()}" checked/></td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <!--来自后台数据-->
+                    </div>
+                    <div class="col-md-3 column text-center">
+                        <input type="submit" class="btn btn-success" style="margin-top:50px" value="开始计算选课方案！" />
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--存放代表时间的字符串项，和时间的单元格相关联-->
+        <div class="hidden">
+            <input type="hidden" name='busyTime' value="0"/>
+            <input type='checkbox' name='busyTime' id='bit0' value='3' />
+            <input type='checkbox' name='busyTime' id='bit1' value='24576' />
+            <input type='checkbox' name='busyTime' id='bit2' value='201326592' />
+            <input type='checkbox' name='busyTime' id='bit3' value='1649267441664' />
+            <input type='checkbox' name='busyTime' id='bit4' value='13510798882111488' />
+            <input type='checkbox' name='busyTime' id='bit5' value='12' />
+            <input type='checkbox' name='busyTime' id='bit6' value='98304' />
+            <input type='checkbox' name='busyTime' id='bit7' value='805306368' />
+            <input type='checkbox' name='busyTime' id='bit8' value='6597069766656' />
+            <input type='checkbox' name='busyTime' id='bit9' value='54043195528445952' />
+            <input type='checkbox' name='busyTime' id='bit10' value='48' />
+            <input type='checkbox' name='busyTime' id='bit11' value='393216' />
+            <input type='checkbox' name='busyTime' id='bit12' value='3221225472' />
+            <input type='checkbox' name='busyTime' id='bit13' value='26388279066624' />
+            <input type='checkbox' name='busyTime' id='bit14' value='216172782113783808' />
+            <input type='checkbox' name='busyTime' id='bit15' value='448' />
+            <input type='checkbox' name='busyTime' id='bit16' value='3670016' />
+            <input type='checkbox' name='busyTime' id='bit17' value='30064771072' />
+            <input type='checkbox' name='busyTime' id='bit18' value='246290604621824' />
+            <input type='checkbox' name='busyTime' id='bit19' value='2017612633061982208' />
+            <input type='checkbox' name='busyTime' id='bit20' value='1536' />
+            <input type='checkbox' name='busyTime' id='bit21' value='12582912' />
+            <input type='checkbox' name='busyTime' id='bit22' value='103079215104' />
+            <input type='checkbox' name='busyTime' id='bit23' value='844424930131968' />
+            <input type='checkbox' name='busyTime' id='bit24' value='6917529027641081856' />
+            <input type='checkbox' name='busyTime' id='bit25' value='6144' />
+            <input type='checkbox' name='busyTime' id='bit26' value='50331648' />
+            <input type='checkbox' name='busyTime' id='bit27' value='412316860416' />
+            <input type='checkbox' name='busyTime' id='bit28' value='3377699720527872' />
+            <input type='checkbox' name='busyTime' id='bit29' value='-9223372036854775808' />
+        </div>
+    </form>
+</div>
+
+</body>
+</html>
