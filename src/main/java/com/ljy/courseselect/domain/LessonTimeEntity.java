@@ -101,4 +101,12 @@ public class LessonTimeEntity {
     public void setLessonByLessonId(LessonEntity lessonByLessonId) {
         this.lessonByLessonId = lessonByLessonId;
     }
+
+    @Override
+    public String toString(){
+        return getLessonByLessonId().getCourseByCourseId().getCourseName()+" "
+                +getWeek()+" "
+                +getLessonByLessonId().getTeacherName()+" "
+                +getPlace();
+    }
 }

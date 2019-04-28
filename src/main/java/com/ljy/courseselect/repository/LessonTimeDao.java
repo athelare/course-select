@@ -7,4 +7,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface LessonTimeDao extends JpaRepository<LessonTimeEntity,Long> {
+    LessonTimeEntity findLessonTimeEntityByTimeId(int id);
 }

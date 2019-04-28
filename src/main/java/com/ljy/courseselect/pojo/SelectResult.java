@@ -45,6 +45,7 @@ public class SelectResult {
     public void setPlans(List<SelectPlan> plans) {
         this.plans = plans;
     }
+
     public void addNewPlan(SelectPlan newPlan){
         this.plans.add(newPlan);
     }

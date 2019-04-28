@@ -6,6 +6,8 @@
  * @param {int} maxentries Number of entries to paginate
  * @param {Object} opts Several options (see README for documentation)
  * @return {Object} jQuery Object
+ *
+ * @Modify by ljy, change its style to bootstrap.
  */
 jQuery.fn.pagination = function(maxentries, opts){
 	opts = jQuery.extend({
@@ -77,13 +79,19 @@ jQuery.fn.pagination = function(maxentries, opts){
 				page_id = page_id<0?0:(page_id<np?page_id:np-1); // 规范page id值
 				appendopts = jQuery.extend({text:page_id+1, classes:""}, appendopts||{});
 				if(page_id == current_page){
-					var lnk = jQuery("<span class='current'>"+(appendopts.text)+"</span>");
+					var lnk = jQuery("<li class=\"active\"><a>"+(appendopts.text)+"</a></li>");
 				}else{
-					var lnk = jQuery("<a>"+(appendopts.text)+"</a>")
+					var lnk = jQuery("<li></li>");
+					var tmp = jQuery("<a>"+(appendopts.text)+"</a>")
 						.bind("click", getClickHandler(page_id))
-						.attr('href', opts.link_to.replace(/__id__/,page_id));		
+						.attr('href', opts.link_to.replace(/__id__/,page_id));
+					lnk.append(tmp);
 				}
 				if(appendopts.classes){lnk.addClass(appendopts.classes);}
+				if((lnk.hasClass('prev') || lnk.hasClass('next'))&&lnk.hasClass('active')){
+					lnk.removeClass('active');
+					lnk.addClass('disabled');
+				}
 				panel.append(lnk);
 			}
 			// 产生"Previous"-链接
@@ -99,7 +107,7 @@ jQuery.fn.pagination = function(maxentries, opts){
 				}
 				if(opts.num_edge_entries < interval[0] && opts.ellipse_text)
 				{
-					jQuery("<span>"+opts.ellipse_text+"</span>").appendTo(panel);
+					jQuery("<li><a style=\"border-top:0;border-bottom:0;background-color:transparent !important;\">"+opts.ellipse_text+"</a></li>").appendTo(panel);
 				}
 			}
 			// 产生内部的些链接
@@ -111,7 +119,7 @@ jQuery.fn.pagination = function(maxentries, opts){
 			{
 				if(np-opts.num_edge_entries > interval[1]&& opts.ellipse_text)
 				{
-					jQuery("<span>"+opts.ellipse_text+"</span>").appendTo(panel);
+					jQuery("<li><a style=\"border-top:0;border-bottom:0;background-color:transparent !important;\">"+opts.ellipse_text+"</a></li>").appendTo(panel);
 				}
 				var begin = Math.max(np-opts.num_edge_entries, interval[1]);
 				for(var i=begin; i<np; i++) {

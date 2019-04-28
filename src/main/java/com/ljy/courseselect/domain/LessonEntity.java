@@ -10,7 +10,6 @@ import java.util.Objects;
 @Table(name = "lesson", schema = "course_select")
 public class LessonEntity {
     private String lessonId;
-    private String courseId;
     private String teacherName;
     private String advice;
     private Long firstHalf;
@@ -26,16 +25,6 @@ public class LessonEntity {
 
     public void setLessonId(String lessonId) {
         this.lessonId = lessonId;
-    }
-
-    @Basic
-    @Column(name="course_id", nullable = false,length = 10)
-    public String getCourseId() {
-        return courseId;
-    }
-
-    public void setCourseId(String courseId) {
-        this.courseId = courseId;
     }
 
     @Basic
@@ -96,7 +85,7 @@ public class LessonEntity {
     }
 
     @ManyToOne
-    @JoinColumn(name = "course_id", referencedColumnName = "course_id",insertable = false,updatable = false)
+    @JoinColumn(name = "course_id", referencedColumnName = "course_id")
     public CourseEntity getCourseByCourseId() {
         return courseByCourseId;
     }

@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="http://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script type="text/javascript" src="https://code.jquery.com/jquery-3.4.0.min.js"></script>
+    <script src="http://code.jquery.com/ui/1.12.1/jquery-ui.min.js" integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+    <script src="/js/jquery.pagination.js"></script>
+
+    <title>选课方案</title>
+    <style>
+        table.table,table-borderd tbody tr td{
+            text-align: center;
+            vertical-align: middle;
+        }
+    </style>
+    <script>
+        $(function () {
+            var pageBar=$("#Pagination");
+            var resultRows=$('#hiddenResult div');
+            var num_entries = resultRows.length;
+            // 创建分页
+            pageBar.pagination(num_entries, {
+                num_edge_entries: 1, //边缘页数
+                num_display_entries: 4, //主体页数
+                prev_text: '上一页',
+                next_text: '下一页',
+                callback: pageSelectCallback,
+                items_per_page: 1 //每页显示1项
+            });
+        });
+        function pageSelectCallback(page_index, jq){
+            $("#courseTable tbody").empty().append($("#hiddenResult div:eq("+page_index+") table.csTable tbody tr").clone());
+
+            var Links = $('#courseLink tbody');
+            Links.empty();
+            var lessons = $("#hiddenResult div:eq("+page_index+") table.csLink tbody tr").clone();
+            for(var i=0;i<lessons.length;++i){
+                var lessonId=lessons[i].cells[0].textContent;
+                var courseId=lessons[i].cells[1].textContent;
+                var courseName=lessons[i].cells[2].textContent;
+                Links.append('<tr><td><a href="http://jwdep.dhu.edu.cn/dhu/student/selectcourse/selectcourse2.jsp?courseNo='+lessonId+'&courseId='+courseId+'&courseName='+escape(courseName)+'" target="_blank" >'+courseName+'</a></td></tr>')
+            }
+            return false;
+        }
+    </script>
+</head>
+<body>
+<div class="container">
+    <!--标题栏-->
+    <div class="row clearfix">
+        <div class="col-md-12 column">
+            <nav class="navbar navbar-default" role="navigation">
+                <!--选课规划系统标签-->
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1"> <span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button> <a class="navbar-brand">选课规划系统</a>
+                </div>
+
+                <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                    <ul class="nav navbar-nav">
+                        <li class="active" id="btn_byPlan">
+                            <a style="cursor:pointer">选课规划方案汇总</a>
+                        </li>
+                    </ul>
+                    <ul class="nav navbar-nav navbar-right">
+                        <li>
+                            <a href="/打开">注销</a>
+                        </li>
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">选项<strong class="caret"></strong></a>
+                            <ul class="dropdown-menu">
+                                <li>
+                                    <a href="#">个人信息</a>
+                                </li>
+                                <li>
+                                    <a href="#">联系我们</a>
+                                </li>
+                                <li>
+                                    <a href="#">网站说明</a>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+
+            </nav>
+        </div>
+    </div>
+    <!--显示计划-->
+    <div class="row clearfix">
+        <div class="col-md-12 column">
+            <div class="row clearfix">
+                <div class="col-md-1 column">
+                </div>
+                <div class="col-md-8 column text-center">
+                    <table class="table table-bordered" id="courseTable">
+                        <thead>
+                        <th style="width: 40px">节</th>
+                        <th>周一</th>
+                        <th>周二</th>
+                        <th>周三</th>
+                        <th>周四</th>
+                        <th>周五</th>
+                        </thead>
+                        <tbody>
+
+                        </tbody>
+                    </table>
+                    <ul class="pagination" id="Pagination">
+                    </ul>
+                </div>
+                <div class="col-md-3 column">
+                    <h3>快捷选课链接</h3>
+                    <table class="table" id="courseLink">
+                        <thead>
+                        <tr>
+                            <th>
+                                点击进入左边方案的选课链接
+                            </th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td>
+                                1
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="hiddenResult" style="display: none">
+    <div th:each="plan:${results.getPlans()}">
+        <table class="table table-bordered csTable" style="table-layout:fixed">
+            <tbody>
+            <tr th:each="j:${#numbers.sequence(0,12)}">
+                <td th:text="${j+1}"></td>
+                <th:block th:each="i:${#numbers.sequence(0,4)}">
+                    <td th:if="${plan.getRowSpan()[i][j]} gt '0'"
+                        th:rowspan="${plan.getRowSpan()[i][j]}">
+                        <th:block
+                                th:each="item:${plan.getCourseTable().get(i).get(j)}"
+                                th:utext="${item.toString()+'<br>'}"/>
+                    </td>
+                </th:block>
+            </tr>
+            </tbody>
+        </table>
+        <table class="table table-bordered csLink" style="table-layout:fixed">
+            <thead><th style="width: 40px">节</th><th>周一</th><th>周二</th><th>周三</th><th>周四</th><th>周五</th></thead>
+            <tbody>
+            <tr th:each="lesson:${plan.getLessons()}">
+                <td th:text="${lesson.getLessonId()}"></td>
+                <td th:text="${lesson.getCourseByCourseId().getCourseId()}"></td>
+                <td th:text="${lesson.getCourseByCourseId().getCourseName()}"></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+</body>
+</html>

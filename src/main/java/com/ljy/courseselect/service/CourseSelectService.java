@@ -5,5 +5,5 @@ import com.ljy.courseselect.pojo.SelectResult;
 import java.util.List;
 
 public interface CourseSelectService {
-    SelectResult GeneratePlans(List<String> courseIds, List<String> lessonIds);
+    SelectResult GeneratePlans(List<String> courseIds, List<String> lessonIds, List<Long>busyTime);
 }

@@ -26,7 +26,7 @@ public class CourseSelectImpl implements CourseSelectService {
     private static List<CourseEntity>courseEntities;
 
     @Override
-    public SelectResult GeneratePlans(List<String> courseIds, List<String> lessonIds) {
+    public SelectResult GeneratePlans(List<String> courseIds, List<String> lessonIds, List<Long>busyTime) {
         //这个课程的列表只包含选取过的课程，不是课程所有的全部课程。
         List<CourseEntity>courses=new ArrayList<>();
         for(String courseId:courseIds){
@@ -48,7 +48,10 @@ public class CourseSelectImpl implements CourseSelectService {
                 System.out.println('\t'+lesson.getLessonId());
             }
         }*/
-
+        Long allBusyTime=0L;
+        for(Long oneBusyTime:busyTime){
+            allBusyTime|=oneBusyTime;
+        }
         //Initiate Variables.
         courseEntities=courses;
         selectResult = new SelectResult();
@@ -63,11 +66,16 @@ public class CourseSelectImpl implements CourseSelectService {
             }
             SearchPlans(
                     0,
-                    0L,
-                    0L,
+                    allBusyTime,
+                    allBusyTime,
                     0
             );
         }while(selectResult.getPlans().size()==0);
+        System.out.println("Plan generating finished.");
+        System.out.println("Total plans:"+selectResult.getPlans().size());
+        System.out.println("Conflict status:"+selectResult.getConflict());
+        System.out.println("isTooManyPlans:"+selectResult.isTooManyPlans());
+        System.out.println("isTooManyConflicts:"+selectResult.isTooManyConflicts());
         return selectResult;
     }
      private void SearchPlans(int index,
@@ -75,8 +83,10 @@ public class CourseSelectImpl implements CourseSelectService {
                             Long currentSecondHalf,
                             int currentConflict){
         //If too many plans
-        if(planCount>=100)
+        if(planCount>=100) {
             selectResult.setTooManyPlans(true);
+            return;
+        }
         //If too many conflicts
         else if(currentConflict>maxConflict)
             return;

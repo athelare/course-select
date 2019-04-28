@@ -1,6 +1,6 @@
 package com.ljy.courseselect;
 
-import com.ljy.courseselect.domain.CourseEntity;
+import com.ljy.courseselect.repository.LessonTimeDao;
 import com.ljy.courseselect.service.impl.CourseListImpl;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -9,9 +9,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.servlet.ServletComponentScan;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -20,14 +17,16 @@ public class CourseSelectApplicationTests {
     @Autowired
     CourseListImpl courseList;
 
+    @Autowired
+    LessonTimeDao lessonTimeDao;
     @Test
     public void contextLoads() {
-        System.out.println("Test_______helloWorld!");
+        System.out.println("Test__helloWorld!");
     }
 
     @Test
-    public void testCourseDao(){
-
+    public void testTime(){
+        System.out.println(lessonTimeDao.findLessonTimeEntityByTimeId(100).toString());
     }
 
 }
