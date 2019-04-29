@@ -14,7 +14,7 @@ selectGradeMajorPage = 'http://jwdep.dhu.edu.cn/dhu/commonquery/selectgradeyearm
 #获取公共会话变量
 def getSession():
     login_url = 'http://jwdep.dhu.edu.cn/dhu/login_wz.jsp'
-    stuID = input('---课程信息导入---\n学号:')
+    stuID = input('---Step2教学计划导入---\n学号:')
     passwd = getpass.getpass("密码:")
     session = requests.Session()
     
@@ -107,8 +107,9 @@ class Grade:
 		count = 1
 		totalNum = str(len(majorList))
 		for item in majorList:
-			print('爬取第 '+str(count)+'/'+totalNum+'个')
+			print('['+str(count)+'/'+totalNum+']',end='')
 			self.majors.append(Major(year,item['value'],Grade.ridPat.sub('',item.text)))
+			count+=1
 			time.sleep(1)
 
 

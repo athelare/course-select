@@ -14,7 +14,7 @@ from bs4 import BeautifulSoup
 #获取公共会话变量
 def getSession():
     login_url = 'http://jwdep.dhu.edu.cn/dhu/login_wz.jsp'
-    stuID = input('---课程信息导入---\n学号:')
+    stuID = input('---Step1课程信息导入---\n学号:')
     passwd = getpass.getpass("密码:")
     session = requests.Session()
     

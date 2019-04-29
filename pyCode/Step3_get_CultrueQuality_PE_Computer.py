@@ -8,7 +8,7 @@ import os
 #获取公共会话变量
 def getSession():
     login_url = 'http://jwdep.dhu.edu.cn/dhu/login_wz.jsp'
-    stuID = input('---课程信息导入---\n学号:')
+    stuID = input('---Step3导入文化素质＆外语＆体育＆计算机等课程---\n学号:')
     passwd = getpass.getpass("密码:")
     session = requests.Session()
     
