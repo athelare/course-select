@@ -14,15 +14,15 @@
     </style>
 </head>
 <body>
-<div class="bg">
+<form class="bg" action="/user/userLogin">
     <div class="wel">选课规划系统</div>
     <div class="user">
-        <div name="username" class="fillBlank">用户名</div>
-        <input  type="text" name="用户"  placeholder="学号/工号" />
+        <div class="fillBlank">用户名</div>
+        <input  type="text" name="username"  placeholder="学号/工号" />
     </div>
-    <div class="password" >
-        <div name="password" class="fillBlank">密&nbsp;&nbsp;&nbsp;码</div>
-        <input class="" type="password" placeholder="初始密码：用户名" />
+    <div class="password">
+        <div class="fillBlank">密&nbsp;&nbsp;&nbsp;码</div>
+        <input type="password" name="password" placeholder="初始密码：用户名" />
     </div>
     <div class="rem" >
         <input type="checkbox" name="" id="remember" onclick="" />
@@ -36,6 +36,6 @@
         </div>
     </div>
     <input class="btn" type="submit" name="登录" value="登录" />
-</div>
+</form>
 </body>
 </html>

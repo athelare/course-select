@@ -8,6 +8,7 @@
         <class>com.ljy.courseselect.domain.LessonTimeEntity</class>
         <class>com.ljy.courseselect.domain.SpecificCourseEntity</class>
         <class>com.ljy.courseselect.domain.TeachingPlanEntity</class>
+        <class>com.ljy.courseselect.domain.StudentAccountEntity</class>
         <properties>
             <property name="hibernate.connection.url"
                       value="jdbc:mysql://localhost:3306/course_select?characterEncoding=UTF-8&amp;serverTimezone=CTT"/>
