@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="refresh" content="3;url=/login.html">
+    <title>您还未登录！</title>
+</head>
+<body>
+<h1 style="text-align: center">提示：<b style="color:red">您还未登录！</b></h1>
+<br>
+<h3 style="text-align: center" id="count-down">3秒后将自动跳转到登录界面</h3>
+<script>
+    let t=2;
+    let flag = document.getElementById("count-down");
+    setInterval('flag.innerText=t+"秒后将自动跳转到登录界面";t--',1000);
+</script>
+</body>
+
+</html>
